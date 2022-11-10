@@ -15,7 +15,7 @@ public class EmMergeSort {
 
       partition(100, reader, writer);
     } catch (Exception x) {
-      System.err.println(x);
+      x.printStackTrace();
     }
   }
 
@@ -25,50 +25,45 @@ public class EmMergeSort {
    * @param blockSize Size of the blocks in bytes
    * @return size of one partition in bytes
    **/
-  public static long partition(int blockSize, Reader reader, Writer writer) throws Exception {
-    long freeMem = runtime.freeMemory();
-    freeMem = 490;
-    long fileSize = reader.fileSize();
-    long numBlocks = fileSize / blockSize;
-    int rest = (int) fileSize % blockSize;
+  public static long partition(int bBlockSize, Reader reader, Writer writer) throws Exception {
+    long bFreeMem = runtime.freeMemory();
+    long bFileSize = reader.fileSize();
+    long bPartitionSize = bFileSize > bFreeMem / 2 ? ((bFreeMem / 2) / bBlockSize) * bBlockSize : bFileSize;
+    long eTotalBlocks = (bFileSize + bBlockSize - 1) / bBlockSize;
+    long ePartitionBlocks = bPartitionSize / bBlockSize;
 
-    System.out.println("File size: " + fileSize);
-
-    if (rest != 0) {
-      numBlocks += 1;
+    if (bPartitionSize < 1) {
+      System.err.println("Buffer does not fit into memory. \nPlease use a smaller buffer size.");
+      System.exit(1);
     }
 
-    long partitionSize = (freeMem / blockSize) * blockSize;
-    if (fileSize < partitionSize) {
-      partitionSize = fileSize;
-    }
-
-    long blocksPerPartition = partitionSize / blockSize;
+    int[] partition = new int[(int) bPartitionSize / 4];
 
     int nread = 0;
+    int runs = 0;
 
-    int[] blocks = new int[(int) partitionSize / 4];
+    while (nread != -1) {
+      nread = reader.readIntBuffer(partition);
+      System.out.println(nread / 4 + " numbers read");
 
-    for (int i = 0; nread != -1; i++) {
-      long blocksRemaining = numBlocks - i * blocksPerPartition;
-      if (blocksRemaining > 0 && blocksRemaining <= blocksPerPartition) {
-        if (rest > 0) {
-          blocks = new int[(int) ((blocksRemaining - 1) * blockSize + rest) / 4];
-        } else {
-          blocks = new int[(int) blocksRemaining * blockSize / 4];
-        }
-      }
-      nread = reader.readInts(blocks);
+      // exit loop if stream is empty
       if (nread == -1) {
         break;
       }
-      Arrays.sort(blocks);
-      writer.write(blocks);
-      System.out.println(Arrays.toString(blocks));
-      System.out.println(nread);
-      System.out.println("Run finished \n");
+
+      // Trim array to the number of elements read
+      if (nread < bPartitionSize) {
+        partition = Arrays.copyOf(partition, nread / 4);
+      }
+
+      partition = MergeSort.sort(partition);
+
+      writer.write(partition);
+      runs++;
     }
 
-    return partitionSize;
+    System.out.println("Partitioned file in " + runs + "runs");
+
+    return bPartitionSize;
   }
 }

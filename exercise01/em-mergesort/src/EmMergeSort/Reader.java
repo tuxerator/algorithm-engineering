@@ -34,34 +34,29 @@ public class Reader {
     return array;
   }
 
-  public int[] readIntBuffer(int position) throws Exception {
+  public int readIntBuffer(int[] dest, int position) throws Exception {
     ByteBuffer buffer = ByteBuffer.allocate(bufSize);
     IntBuffer intBuffer = buffer.order(ByteOrder.BIG_ENDIAN).asIntBuffer();
     fc.position(position);
     int nread = 0;
 
-    do {
-      fc.read(buffer);
-    } while (nread != -1 && buffer.hasRemaining());
+    nread = fc.read(buffer);
 
-    int[] array = new int[intBuffer.remaining()];
-    intBuffer.get(array);
+    intBuffer.get(dest);
 
-    return array;
+    return nread;
   }
 
   public long fileSize() throws Exception {
     return fc.size();
   }
 
-  public int readInts(int[] dst) throws Exception {
+  public int readIntBuffer(int[] dst) throws Exception {
     int nread = 0;
     ByteBuffer buffer = ByteBuffer.allocate(dst.length * 4);
     IntBuffer intBuffer = buffer.order(ByteOrder.BIG_ENDIAN).asIntBuffer();
 
-    do {
-      nread = fc.read(buffer);
-    } while (nread != -1 && buffer.hasRemaining());
+    nread = fc.read(buffer);
 
     intBuffer.get(dst);
 

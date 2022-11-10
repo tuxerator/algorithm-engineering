@@ -56,18 +56,20 @@ public class MergeSort {
       return input;
     } else {
       int inputLength = input.length;
-      int[] half1 = new int[inputLength / 2];
-      int[] half2 = new int[inputLength - (inputLength / 2)];
+      int[] half1 = Arrays.copyOfRange(input, 0, (inputLength / 2));
+      int[] half2 = Arrays.copyOfRange(input, (inputLength / 2), inputLength);
       int half1Length = half1.length;
       int index2 = 0;
-      for (int i = 0; i < inputLength; i++) {
-        if (i < half1Length) {
-          half1[i] = input[i];
-        } else {
-          half2[index2] = input[i];
-          index2++;
-        }
-      }
+
+      // for (int i = 0; i < inputLength; i++) {
+      // if (i < half1Length) {
+      // half1[i] = input[i];
+      // } else {
+      // half2[index2] = input[i];
+      // index2++;
+      // }
+      // }
+
       half1 = MergeSort.sort(half1);
       half2 = MergeSort.sort(half2);
       return MergeSort.merge(half1, half2);
