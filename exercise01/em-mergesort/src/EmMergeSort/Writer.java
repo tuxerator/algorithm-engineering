@@ -14,7 +14,7 @@ public class Writer {
 
   public Writer(String file) throws Exception {
     path = Paths.get(file);
-    fc = FileChannel.open(path, CREATE, APPEND);
+    fc = FileChannel.open(path, CREATE, TRUNCATE_EXISTING);
   }
 
   public void write(int[] array) throws Exception {

@@ -29,8 +29,8 @@ public class EmMergeSort {
     long bFreeMem = runtime.freeMemory();
     long bFileSize = reader.fileSize();
     long bPartitionSize = bFileSize > bFreeMem / 2 ? ((bFreeMem / 2) / bBlockSize) * bBlockSize : bFileSize;
-    long eTotalBlocks = (bFileSize + bBlockSize - 1) / bBlockSize;
-    long ePartitionBlocks = bPartitionSize / bBlockSize;
+    // long eTotalBlocks = (bFileSize + bBlockSize - 1) / bBlockSize;
+    // long ePartitionBlocks = bPartitionSize / bBlockSize;
 
     if (bPartitionSize < 1) {
       System.err.println("Buffer does not fit into memory. \nPlease use a smaller buffer size.");
@@ -65,5 +65,47 @@ public class EmMergeSort {
     System.out.println("Partitioned file in " + runs + "runs");
 
     return bPartitionSize;
+  }
+
+  public static void emMerge(int bBlockSize, int bPartitionSize, Reader reader, Writer writer) {
+    int[] block1 = new int[bBlockSize];
+    int[] block2 = new int[bBlockSize];
+    int[] out = new int[bBlockSize];
+
+    int blockPos1 = 0;
+    int blockPos2 = 0;
+
+    int partStart1 = 0;
+    int partStart2 = bPartitionSize;
+
+    int nextPart = 2 * bPartitionSize;
+
+    int filePos1 = 0;
+    int filePos2 = bPartitionSize;
+
+    reader.readIntBuffer(block1, pos1);
+    filePos1 += bBlockSize;
+    reader.readIntBuffer(block2, pos2);
+    filePos2 += bBlockSize;
+
+    for (int i = 0; i < out.length; i++) {
+      if (block1[blockPos1] <= block2[blockPos2]) {
+        out[i] = block1[blockPos1];
+        if (blockPos1 < block1.length - 1) {
+          blockPos1++;
+        } else {
+          if (filePos1 < partStart1 + bPartitionSize) {
+            reader.readIntBuffer(block1, filePos1);
+            filePos1 += bBlockSize;
+          } else {
+            out[i] = block2[blockPos2];
+            blockPos2++;
+          }
+        }
+      } else {
+        out[i] = block2[blockPos2];
+        blockPos2++;
+      }
+    }
   }
 }
