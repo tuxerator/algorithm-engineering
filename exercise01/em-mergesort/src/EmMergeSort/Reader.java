@@ -1,6 +1,7 @@
 package EmMergeSort;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.nio.IntBuffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -61,5 +62,26 @@ public class Reader {
     intBuffer.get(dst);
 
     return nread;
+  }
+
+  public int[] trimRead(int[] dest, long position) throws Exception {
+    int nread = 0;
+
+    while (nread != -1) {
+      nread = readIntBuffer(dest);
+      System.out.println(nread / 4 + " numbers read");
+
+      // exit loop if stream is empty
+      if (nread == -1) {
+        break;
+      }
+
+      // Trim array to the number of elements read
+      if (nread < dest.length * 4) {
+        dest = Arrays.copyOf(dest, nread / 4);
+      }
+    }
+
+    return dest;
   }
 }
