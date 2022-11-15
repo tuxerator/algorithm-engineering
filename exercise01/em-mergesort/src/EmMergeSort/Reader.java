@@ -34,7 +34,7 @@ public class Reader {
     return array;
   }
 
-  public int readIntBuffer(int[] dest, int position) throws Exception {
+  public int readIntBuffer(int[] dest, long position) throws Exception {
     ByteBuffer buffer = ByteBuffer.allocate(bufSize);
     IntBuffer intBuffer = buffer.order(ByteOrder.BIG_ENDIAN).asIntBuffer();
     fc.position(position);

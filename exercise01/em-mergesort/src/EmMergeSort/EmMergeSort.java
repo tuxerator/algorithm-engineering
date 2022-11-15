@@ -13,10 +13,15 @@ public class EmMergeSort {
       Reader reader = new Reader("test_data", 100);
       Writer writer = new Writer("output");
 
-      partition(100, reader, writer);
+      long bPartitionSize = partition(100, reader, writer);
+      emMerge(100, bPartitionSize, reader, writer);
+      reader = new Reader("output", 100);
+      System.out.println(Arrays.toString(reader.readInt()));
+
     } catch (Exception x) {
       x.printStackTrace();
     }
+
   }
 
   /**
@@ -67,56 +72,13 @@ public class EmMergeSort {
     return bPartitionSize;
   }
 
-  public static void emMerge(int bBlockSize, int bPartitionSize, Reader reader, Writer writer) {
-    int[] block1 = new int[bBlockSize];
-    int[] block2 = new int[bBlockSize];
-    int[] out = new int[bBlockSize];
-
-    int blockPos1 = 0;
-    int blockPos2 = 0;
-
-    int partStart1 = 0;
-    int partStart2 = bPartitionSize;
-
-    int nextPart = 2 * bPartitionSize;
-
-    int filePos1 = 0;
-    int filePos2 = bPartitionSize;
-
-    reader.readIntBuffer(block1, pos1);
-    filePos1 += bBlockSize;
-    reader.readIntBuffer(block2, pos2);
-    filePos2 += bBlockSize;
-
-    for (int i = 0; i < out.length; i++) {
-      // Find smaller element
-      if (block1[blockPos1] <= block2[blockPos2]) {
-        out[i] = block1[blockPos1];
-        // Check for end of block
-        if (blockPos1 < block1.length - 1) {
-          blockPos1++;
-        } 
-        else {                                            // read new block
-          if (filePos1 < partStart1 + bPartitionSize) {
-            reader.readIntBuffer(block1, filePos1);
-            filePos1 += bBlockSize;
-            blockPos1 = 0;
-          } 
-          else {                                          // write remaining elements
-            out[i] = block2[blockPos2];
-            blockPos2++;
-          }
-        }
-      } else {
-        out[i] = block2[blockPos2];
-        blockPos2++;
-      }
-    }
+  public static void emMerge(int bBlockSize, long bPartitionSize, Reader reader, Writer writer) throws Exception{
+    mergePartition(0, bPartitionSize, bPartitionSize, bBlockSize, reader, writer);
   }
 
-  public static void mergePartition(int pPart1, int pPart2, int bPartitionSize, int bBlockSize, Reader reader, Writer writer) {
-    int pNextBlock1 = pPart1;
-    int pNextBlock2 = pPart2;
+  public static void mergePartition(long pPart1, long pPart2, long bPartitionSize, int bBlockSize, Reader reader, Writer writer) throws Exception {
+    long pNextBlock1 = pPart1;
+    long pNextBlock2 = pPart2;
     
     int[] block1 = new int[bBlockSize];
     int[] block2 = new int[bBlockSize];
@@ -125,22 +87,72 @@ public class EmMergeSort {
     int indexBlock1 = 0;
     int indexBlock2 = 0;
 
-    reader.readIntBuffer
+    reader.readIntBuffer(block1, pNextBlock1);
+    pNextBlock1 += bBlockSize;
+    reader.readIntBuffer(block2, pNextBlock1);
+    pNextBlock2 += bBlockSize;
 
   while (pNextBlock1 < pPart1 + bPartitionSize && pNextBlock2 < pPart2 + bPartitionSize){
       for (int i = 0; i < out.length; i++) {
-        if (block1[blockPos1] <= block2[blockPos2]) {
-          out[i] = block1[blockPos1];
-          blockPos1++;
-          // Check for end of block
+        if (block1[indexBlock1] <= block2[indexBlock2]) {
+          out[i] = block1[indexBlock1];
+          //not yet end of block 1
+          if(indexBlock1<block1.length-1){
+            indexBlock1++;
+          //need to load new block
+          } else {
+            //check, if we loaded all blocks of partition
+            if(pNextBlock1 == pPart1 + bPartitionSize) {
+              //fill out with block2
+              for (int j = i; j < out.length; i++){
+                out[j] = block2[indexBlock2];
+                indexBlock2++;
+              }
+              break;
+            } else {
+              reader.readIntBuffer(block1, pNextBlock1);
+              indexBlock1 = 0;
+              pNextBlock1 += bBlockSize;
+            }
+          }
         }
         else {
-          out[i] = block2[blockPos2];
-          blockPos2++;
-          // TODO check for end of block
+          out[i] = block2[indexBlock2];
+          if(indexBlock2<block2.length-1){
+            indexBlock2++;
+          //need to load new block
+          } else {
+            //check, if we loaded all blocks of partition
+            if(pNextBlock2 == pPart2 + bPartitionSize) {
+              //fill out with block1
+              for (int j = i; j < out.length; i++){
+                out[j] = block1[indexBlock1];
+                indexBlock1++;
+              }
+              break;
+            } else {
+              reader.readIntBuffer(block2, pNextBlock2);
+              indexBlock2 = 0;
+              pNextBlock2 += bBlockSize;
+            }
+          }
         }
       }
-    // TODO write out to file
+      writer.write(out);
+    }
+
+    while(pNextBlock1 < pPart1 + bPartitionSize) {
+      //write partition 1 till finished
+      reader.readIntBuffer(block1, pNextBlock1);
+      pNextBlock1 += bBlockSize;
+      writer.write(block1);
+    }
+
+    while(pNextBlock2 < pPart2 + bPartitionSize){
+      //write partition 2 till finished
+      reader.readIntBuffer(block2, pNextBlock2);
+      pNextBlock2 += bBlockSize;
+      writer.write(block2);
     }
 
   }
