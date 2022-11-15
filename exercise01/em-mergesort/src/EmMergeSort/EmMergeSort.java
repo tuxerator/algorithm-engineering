@@ -89,15 +89,20 @@ public class EmMergeSort {
     filePos2 += bBlockSize;
 
     for (int i = 0; i < out.length; i++) {
+      // Find smaller element
       if (block1[blockPos1] <= block2[blockPos2]) {
         out[i] = block1[blockPos1];
+        // Check for end of block
         if (blockPos1 < block1.length - 1) {
           blockPos1++;
-        } else {
+        } 
+        else {                                            // read new block
           if (filePos1 < partStart1 + bPartitionSize) {
             reader.readIntBuffer(block1, filePos1);
             filePos1 += bBlockSize;
-          } else {
+            blockPos1 = 0;
+          } 
+          else {                                          // write remaining elements
             out[i] = block2[blockPos2];
             blockPos2++;
           }
@@ -107,5 +112,36 @@ public class EmMergeSort {
         blockPos2++;
       }
     }
+  }
+
+  public static void mergePartition(int pPart1, int pPart2, int bPartitionSize, int bBlockSize, Reader reader, Writer writer) {
+    int pNextBlock1 = pPart1;
+    int pNextBlock2 = pPart2;
+    
+    int[] block1 = new int[bBlockSize];
+    int[] block2 = new int[bBlockSize];
+    int[] out = new int[bBlockSize];
+
+    int indexBlock1 = 0;
+    int indexBlock2 = 0;
+
+    reader.readIntBuffer
+
+  while (pNextBlock1 < pPart1 + bPartitionSize && pNextBlock2 < pPart2 + bPartitionSize){
+      for (int i = 0; i < out.length; i++) {
+        if (block1[blockPos1] <= block2[blockPos2]) {
+          out[i] = block1[blockPos1];
+          blockPos1++;
+          // Check for end of block
+        }
+        else {
+          out[i] = block2[blockPos2];
+          blockPos2++;
+          // TODO check for end of block
+        }
+      }
+    // TODO write out to file
+    }
+
   }
 }
