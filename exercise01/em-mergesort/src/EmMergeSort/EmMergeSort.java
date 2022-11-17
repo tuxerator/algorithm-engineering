@@ -28,7 +28,7 @@ public class EmMergeSort {
 
       outputFile = emMerge(bBlockSize, bPartitionSize, reader, writer, outputFile, inputFile);
       reader = new Reader(outputFile);
-      // System.out.println(Arrays.toString(reader.readInt()));
+      System.out.println(Arrays.toString(reader.readInt()));
 
     } catch (Exception x) {
       x.printStackTrace();
@@ -85,6 +85,17 @@ public class EmMergeSort {
     return bPartitionSize;
   }
 
+  
+  /**
+   * @param bBlockSize
+   * @param bPartitionSize
+   * @param reader
+   * @param writer
+   * @param inputFile
+   * @param outputFile
+   * @return
+   * @throws Exception
+   */
   public static String emMerge(int bBlockSize, long bPartitionSize, Reader reader, Writer writer, String inputFile, String outputFile) throws Exception{  
     long bFileSize = reader.fileSize();
     int numPart = (int)(( bFileSize + bPartitionSize - 1 ) / bPartitionSize);
@@ -113,6 +124,16 @@ public class EmMergeSort {
     return inputFile;
   }
 
+  /**
+   * @param pPart1
+   * @param pPart2
+   * @param bPartitionSize
+   * @param bBlockSize
+   * @param fileSize
+   * @param reader
+   * @param writer
+   * @throws Exception
+   */
   public static void mergePartition(long pPart1, long pPart2, long bPartitionSize, int bBlockSize, long fileSize, Reader reader, Writer writer) throws Exception {
     long pNextBlock1 = pPart1;
     long pNextBlock2 = pPart2;
@@ -133,9 +154,8 @@ public class EmMergeSort {
 
     // merge all blocks of both partitions
     merging:
-    while (pNextBlock1 < pPart1 + bPartitionSize && pNextBlock2 < pPart2 + bPartitionSize){
-      int i = 0;
-      for (int x = i; i < out.length; i++) {
+    while (pNextBlock1 <= pPart1 + bPartitionSize && indexBlock1 < block1.length && pNextBlock2 <= pPart2 + bPartitionSize && indexBlock2 < block2.length){
+      for (int i = 0; i < out.length; i++) {
         if (block1[indexBlock1] <= block2[indexBlock2]) {
           out[i] = block1[indexBlock1];
           //not yet end of block 1
@@ -144,65 +164,53 @@ public class EmMergeSort {
           //need to load new block
           } else {
             //check, if we loaded all blocks of partition
-            reader.readIntBuffer(block1, pNextBlock1);
-            indexBlock1 = 0;
-            pNextBlock1 += bBlockSize;
+            if(pNextBlock1 == pPart1 + bPartitionSize) {
+              //fill out with block2
+              int j = i+1;
+              for (int k = j; j < out.length; j++){
+                out[j] = block2[indexBlock2];
+                indexBlock2++;
+              }
+              writer.write(Arrays.copyOf(out, j));
+              break merging;
+            } else {
+              reader.readIntBuffer(block1, pNextBlock1);
+              indexBlock1 = 0;
+              pNextBlock1 += bBlockSize;
+            }
           }
         }
         else {
           out[i] = block2[indexBlock2];
+
           if(indexBlock2<block2.length-1){
             indexBlock2++;
           //need to load new block
           } else {
             //check, if we loaded all blocks of partition
-           
-            System.out.println("trimRead next block2");
-            block2 = reader.trimRead(block2, pNextBlock2);
-            indexBlock2 = 0;
-            pNextBlock2 += bBlockSize;
+            if(pNextBlock2 == pPart2 + bPartitionSize) {
+              //fill out with block1
+              int j = i+1;
+              for (int k = j; j < out.length && indexBlock1 < block1.length; j++){
+                out[j] = block1[indexBlock1];
+                indexBlock1++;
+              }
+              writer.write(Arrays.copyOf(out, j));
+              break merging;
+            } else {
+              reader.readIntBuffer(block2, pNextBlock2);
+              indexBlock2 = 0;
+              pNextBlock2 += bBlockSize;
+            }
           }
         }
       }
-      
-      System.out.println("pNextBlock1: " +pNextBlock1);
-      System.out.println("pNextPart1: " + (pPart1 + bPartitionSize));
-      System.out.println("pNextBlock2: " +pNextBlock2);
-      System.out.println("pNextPart2: " + (pPart2+ bPartitionSize));
-      if(pNextBlock1 == pPart1 + bPartitionSize) {
-        //fill out with block2
-        int j = i < out.length ? i + 1 : i;
-        System.out.println("i: " + i);
-        System.out.println("j: " + j);
-        while (indexBlock2 < block2.length && j < out.length){
-          out[j] = block2[indexBlock2];
-          indexBlock2++;
-          j++;
-        }
-        System.out.println("j: " + j);
-        out = Arrays.copyOf(out, j);
-      } else if(pNextBlock2 == pPart2 + bPartitionSize) {
-        //fill out with block1
-        int j = i < out.length ? i + 1 : i;
-        System.out.println("i: " + i);
-        System.out.println("j: " + j);
-        while(j < out.length && indexBlock1 < block1.length) {
-          out[j] = block1[indexBlock1];
-          indexBlock1++;
-          j++;
-        }
-        System.out.println("j: " + j);
-        out = Arrays.copyOf(out, j);
-      }
-
       writer.write(out);
     }
 
     System.out.println("Flush part1");
     while(pNextBlock1 < pPart1 + bPartitionSize) {
-      System.out.println("pNextBlock1: " + pNextBlock1);
       //write partition 1 till finished
-      System.out.println("indexBlock1: " + indexBlock1);
       if(indexBlock1 < block1.length) {
         int[] out2 = new int[block1.length - indexBlock1];
         for(int i = 0; i < out2.length; i++ ) {
@@ -219,8 +227,6 @@ public class EmMergeSort {
 
     System.out.println("Flush part2");
     while(pNextBlock2 < pPart2 + bPartitionSize){
-      System.out.println("pNextBlock2: " + pNextBlock2);
-      System.out.println("indexBlock2: " + indexBlock2);
       //write partition 2 till finished
       if(indexBlock2 < block2.length) {
         int[] out2 = new int[block2.length - indexBlock2];
