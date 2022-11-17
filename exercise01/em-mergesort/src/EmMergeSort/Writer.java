@@ -21,6 +21,12 @@ public class Writer {
     ByteBuffer buffer = ByteBuffer.allocate(array.length * 4);
     IntBuffer intBuffer = buffer.asIntBuffer();
     intBuffer.put(array);
-    fc.write(buffer);
+    int nwrite = fc.write(buffer);
+    System.out.println("Bytes written: " + nwrite);
+    System.out.println("Numbers written: " + nwrite / 4 + "\n");
+  }
+
+  public void close() throws Exception {
+    fc.close();
   }
 }

@@ -11,12 +11,10 @@ import static java.nio.file.StandardOpenOption.*;
 import java.nio.channels.FileChannel;
 
 public class Reader {
-  int bufSize;
   Path path;
   FileChannel fc;
 
-  public Reader(String file, int bufSize) throws Exception {
-    this.bufSize = bufSize;
+  public Reader(String file) throws Exception {
     path = Paths.get(file);
     fc = FileChannel.open(path, READ);
   }
@@ -36,14 +34,19 @@ public class Reader {
   }
 
   public int readIntBuffer(int[] dest, long position) throws Exception {
-    ByteBuffer buffer = ByteBuffer.allocate(bufSize);
+    System.out.println("readIntBuffer:");
+    ByteBuffer buffer = ByteBuffer.allocate(dest.length * 4);
     IntBuffer intBuffer = buffer.order(ByteOrder.BIG_ENDIAN).asIntBuffer();
     fc.position(position);
     int nread = 0;
 
     nread = fc.read(buffer);
 
+    System.out.println("nread: " + nread);
+
     intBuffer.get(dest);
+
+    System.out.println("BufferLength: " + dest.length);
 
     return nread;
   }
@@ -65,23 +68,22 @@ public class Reader {
   }
 
   public int[] trimRead(int[] dest, long position) throws Exception {
+    System.out.println("trimRead: ");
     int nread = 0;
 
-    while (nread != -1) {
-      nread = readIntBuffer(dest);
-      System.out.println(nread / 4 + " numbers read");
-
-      // exit loop if stream is empty
-      if (nread == -1) {
-        break;
-      }
+      nread = readIntBuffer(dest, position);
 
       // Trim array to the number of elements read
       if (nread < dest.length * 4) {
         dest = Arrays.copyOf(dest, nread / 4);
       }
-    }
+
+    System.out.println("Trimed array length: " + dest.length);
 
     return dest;
+  }
+
+  public void close() throws Exception {
+    fc.close();
   }
 }
