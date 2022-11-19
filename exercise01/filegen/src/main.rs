@@ -10,7 +10,10 @@ fn main() {
     dbg!(size);
     let size = size * 1000u64;
 
-    let path = Path::new(&args[2]);
+    let x: i32 = args[2].trim().parse().expect("{args[1]} is not a valid number!");
+    let y: i32 = args[3].trim().parse().expect("{args[1]} is not a valid number!");
+
+    let path = Path::new(&args[4]);
     let display = path.display();
 
     let buf_size = 130000usize;
@@ -28,7 +31,7 @@ fn main() {
     let mut buffer = BufWriter::with_capacity(buf_size as usize, file);
 
     for _ in 0..n {
-        let rand_num = fastrand::i32(..).to_be_bytes();
+        let rand_num = fastrand::i32(x..y).to_be_bytes();
         buffer.write(&rand_num).expect("Write error.");
     }
     match buffer.flush() {
