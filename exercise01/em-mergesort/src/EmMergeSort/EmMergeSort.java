@@ -11,13 +11,14 @@ public class EmMergeSort {
     System.out.println("Using " + runtime.totalMemory() + " bytes for EM-MergeSort.");
 
     int bBlockSize = Integer.parseInt(args[0]);
-    String inputFile = args[1];
-    String outputFile = args[2];
+    long memSize = Integer.parseInt(args[1]);
+    String inputFile = args[2];
+    String outputFile = args[3];
 
     try {
       Reader reader = new Reader(inputFile);
       Writer writer = new Writer(outputFile);
-      long bPartitionSize = partition(bBlockSize, reader, writer);
+      long bPartitionSize = partition(bBlockSize, memSize, reader, writer);
 
       reader.close();
       writer.close();
@@ -28,7 +29,6 @@ public class EmMergeSort {
 
       outputFile = emMerge(bBlockSize, bPartitionSize, reader, writer, outputFile, inputFile);
       reader = new Reader(outputFile);
-      System.out.println(Arrays.toString(reader.readInt()));
 
     } catch (Exception x) {
       x.printStackTrace();
@@ -42,9 +42,15 @@ public class EmMergeSort {
    * @param blockSize Size of the blocks in bytes
    * @return size of one partition in bytes
    **/
-  public static long partition(int bBlockSize, Reader reader, Writer writer) throws Exception {
-    long bFreeMem = runtime.freeMemory();
-    bFreeMem = 128000;
+  public static long partition(int bBlockSize, long memSize, Reader reader, Writer writer) throws Exception {
+    long bFreeMem;
+    if (memSize == 0) {
+      bFreeMem = runtime.freeMemory();
+    }
+    else {
+      bFreeMem = memSize;
+    }
+
     long bFileSize = reader.fileSize();
     long bPartitionSize = bFileSize > bFreeMem / 2 ? ((bFreeMem / 2) / bBlockSize) * bBlockSize : bFileSize;
     // long eTotalBlocks = (bFileSize + bBlockSize - 1) / bBlockSize;
@@ -62,7 +68,6 @@ public class EmMergeSort {
 
     while (nread != -1) {
       nread = reader.readIntBuffer(partition);
-      System.out.println(nread / 4 + " numbers read");
 
       // exit loop if stream is empty
       if (nread == -1) {
@@ -119,6 +124,8 @@ public class EmMergeSort {
       inputFile = tmp;
       reader = new Reader(inputFile);
       writer = new Writer(outputFile);
+
+      System.out.println("Run finished. Merged " + partitions + " partitions.");
     }
 
     return inputFile;
@@ -167,7 +174,7 @@ public class EmMergeSort {
             if(pNextBlock1 == pPart1 + bPartitionSize) {
               //fill out with block2
               int j = i+1;
-              for (int k = j; j < out.length; j++){
+              for (int k = j; j < out.length && indexBlock2 < block2.length; j++){
                 out[j] = block2[indexBlock2];
                 indexBlock2++;
               }
@@ -208,7 +215,6 @@ public class EmMergeSort {
       writer.write(out);
     }
 
-    System.out.println("Flush part1");
     while(pNextBlock1 < pPart1 + bPartitionSize) {
       //write partition 1 till finished
       if(indexBlock1 < block1.length) {
@@ -225,7 +231,6 @@ public class EmMergeSort {
       writer.write(block1);
     }
 
-    System.out.println("Flush part2");
     while(pNextBlock2 < pPart2 + bPartitionSize){
       //write partition 2 till finished
       if(indexBlock2 < block2.length) {

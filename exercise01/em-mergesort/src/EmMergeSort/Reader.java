@@ -34,7 +34,6 @@ public class Reader {
   }
 
   public int readIntBuffer(int[] dest, long position) throws Exception {
-    System.out.println("readIntBuffer:");
     ByteBuffer buffer = ByteBuffer.allocate(dest.length * 4);
     IntBuffer intBuffer = buffer.order(ByteOrder.BIG_ENDIAN).asIntBuffer();
     fc.position(position);
@@ -42,11 +41,9 @@ public class Reader {
 
     nread = fc.read(buffer);
 
-    System.out.println("nread: " + nread);
 
     intBuffer.get(dest);
 
-    System.out.println("BufferLength: " + dest.length);
 
     return nread;
   }
@@ -68,7 +65,6 @@ public class Reader {
   }
 
   public int[] trimRead(int[] dest, long position) throws Exception {
-    System.out.println("trimRead: ");
     int nread = 0;
 
       nread = readIntBuffer(dest, position);
@@ -78,7 +74,6 @@ public class Reader {
         dest = Arrays.copyOf(dest, nread / 4);
       }
 
-    System.out.println("Trimed array length: " + dest.length);
 
     return dest;
   }

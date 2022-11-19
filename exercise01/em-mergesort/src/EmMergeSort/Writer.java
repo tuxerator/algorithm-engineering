@@ -22,8 +22,6 @@ public class Writer {
     IntBuffer intBuffer = buffer.asIntBuffer();
     intBuffer.put(array);
     int nwrite = fc.write(buffer);
-    System.out.println("Bytes written: " + nwrite);
-    System.out.println("Numbers written: " + nwrite / 4 + "\n");
   }
 
   public void close() throws Exception {
