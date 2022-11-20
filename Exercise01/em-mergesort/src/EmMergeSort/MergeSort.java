@@ -1,13 +1,25 @@
 package EmMergeSort;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.BufferedWriter;
 import java.util.Arrays;
 
 public class MergeSort {
+  public static void main(String[] args) throws Exception {
+    Reader reader = new Reader(args[0]);
+    int[] data = reader.readInt();
+    reader.close();
+
+    System.out.println("Sorting " + data.length * 4 + " bytes with classical merge sort.");
+
+    long timer = System.nanoTime();
+
+    data = sort(data);
+    
+    long timeSort = System.nanoTime() - timer;
+    System.out.println("Sorting took " + ((double) timeSort / (double) 1000000000) + 's');
+
+    Writer writer = new Writer(args[0]);
+    writer.write(data);
+  }
 
   /**
    * 

@@ -1,3 +1,4 @@
 .DS_Store
 **/target
 *.class
+Exercise01/tests/test-data
