@@ -6,17 +6,12 @@ public class Mergesort{
 
     public static void main(String[] args) {
         int quantity = Integer.parseInt(args[0]);
-        //int processors = Integer.parseInt(args[0]);
-        double start = System.nanoTime();
         int[] unsorted = Inputgenerator.generate(quantity);
-        double end = System.nanoTime();
-        System.out.println((end-start)/1000000+" ms needed for input generation");
-        System.out.println("Mergesort startet for input size "+quantity);
         double startTime = System.nanoTime();
         Mergesort.sort(unsorted);
         double endTime = System.nanoTime();
         double totalTime = (endTime - startTime)/1000000;
-        System.out.println("Total running time of Mergesort was "+totalTime+" ms");
+        System.out.println(totalTime);
     }
 
     public static int[] sort(int[] unsorted){
