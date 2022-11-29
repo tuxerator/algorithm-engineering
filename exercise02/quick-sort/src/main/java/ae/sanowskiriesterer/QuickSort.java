@@ -1,22 +1,13 @@
 package ae.sanowskiriesterer;
 
-import java.util.Arrays;
-
 /**
- * Classical quick-sort
-=======
-
-/**
- * 
->>>>>>> Stashed changes
+ * Static class containing classical quick-sort
  *
  */
-public class App {
+public class QuickSort {
 
-  public static void main(String[] args) {
-    int[] arr = {5,2,7,1,89,9,1,3,5,2,3,56647,1234,5,4,413,23425,431};
+  public static void quickSort(int[] arr) {
     quickSort(arr, 0, arr.length -1);
-    System.out.println(Arrays.toString(arr));
   }
 
   public static void quickSort(int[] arr, int i_low, int i_high) {
