@@ -4,11 +4,6 @@ import java.util.Arrays;
 
 /**
  * Classical quick-sort
-=======
-
-/**
- * 
->>>>>>> Stashed changes
  *
  */
 public class App {
