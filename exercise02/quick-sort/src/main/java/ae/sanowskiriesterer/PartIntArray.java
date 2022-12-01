@@ -20,6 +20,13 @@ public class PartIntArray {
   public int getStart() {
     return i_start;
   }
+
+  public void setStart(int i_start) {
+    if (i_start + length > arr.length) {
+      throw new IndexOutOfBoundsException();
+    }
+    this.i_start = i_start;
+  }
   
   public int[] getArray() {
     return arr;
@@ -30,14 +37,20 @@ public class PartIntArray {
   }
 
   public int get(int i) {
-    if (i >= length)
+    if (i >= length || i < 0) {
+      System.out.println("arr.length: " + length);
+      System.out.println("i: " + i);
       throw new IndexOutOfBoundsException();
+    }
     return arr[i_start + i];
   }
   
   public void set(int elem, int i) {
-    if (i >= length)
+    if (i >= length || i < 0) {
+      System.out.println("arr.length: " + length);
+      System.out.println("i: " + i);
       throw new IndexOutOfBoundsException();
+    }
     arr[i_start + i] = elem;
   }
 

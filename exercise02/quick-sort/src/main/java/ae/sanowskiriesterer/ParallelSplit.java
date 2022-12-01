@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
+/**
+ * 
+ */
 public class ParallelSplit extends RecursiveTask<Pair<PartIntArray,PartIntArray>> {
   private PartIntArray arr;
   private int threshhold;
@@ -27,18 +30,13 @@ public class ParallelSplit extends RecursiveTask<Pair<PartIntArray,PartIntArray>
         arr.set(tmp, i);
         j++;
       }
-      
-      System.out.println("Start index: " + arr.getStart());
-      System.out.println("j: " + j);
-      System.out.println("split result: " + arr.toString());
-      System.out.println();
     }
+    
 
     return new Pair<PartIntArray,PartIntArray>(new PartIntArray(arr.getArray(), arr.getStart(), j), new PartIntArray(arr.getArray(), arr.getStart() + j, arr.length - j));
   }
 
   protected Pair<PartIntArray,PartIntArray> compute() {
-    System.out.println();
     if (arr.length <= threshhold) {
       return split();
     }
@@ -49,8 +47,6 @@ public class ParallelSplit extends RecursiveTask<Pair<PartIntArray,PartIntArray>
 
     for (ParallelSplit future : futures) {
       try {
-        System.out.println("Executing Task");
-
         results.add(future.get());
       } catch (Exception e) {
         e.printStackTrace();
@@ -60,21 +56,19 @@ public class ParallelSplit extends RecursiveTask<Pair<PartIntArray,PartIntArray>
     return mergeSplitResult(results);
   }
 
-  protected Collection<ParallelSplit> createSubtasks() {
-    System.out.println("Creating sub tasks.");
+  /**
+ * @return A Collection<ParallelSplit> with all sub tasks.
+ */
+protected Collection<ParallelSplit> createSubtasks() {
     Collection<ParallelSplit> subTasks = new ArrayList<>();
+    int lenght = threshhold;
 
-    for (int i = 0; i < arr.length; i += threshhold) {
-      if (i + threshhold >= arr.length) {
-        threshhold = arr.length - i;
+    for (int i = 0; i < arr.length; i += lenght) {
+      if (i + lenght >= arr.length) {
+        lenght = arr.length - i;
       }
 
-      System.out.println("Subarray:");
-      System.out.println("Start index: " + i);
-      System.out.println("length: " + threshhold);
-      System.out.println();
-
-      subTasks.add(new ParallelSplit(new PartIntArray(arr.getArray(), i, threshhold), threshhold, pivot));
+      subTasks.add(new ParallelSplit(new PartIntArray(arr.getArray(), arr.getStart() + i, lenght), threshhold, pivot));
     }
 
     return subTasks;
@@ -83,7 +77,7 @@ public class ParallelSplit extends RecursiveTask<Pair<PartIntArray,PartIntArray>
   protected Pair<PartIntArray,PartIntArray> mergeSplitResult(Collection<Pair<PartIntArray,PartIntArray>> splitResults) {
     int[] tmp = arr.getArray().clone();
 
-    int lowerPrfxSum = 0;
+    int lowerPrfxSum = arr.getStart();
 
 
     for (Pair<PartIntArray,PartIntArray> result : splitResults) {
@@ -94,7 +88,8 @@ public class ParallelSplit extends RecursiveTask<Pair<PartIntArray,PartIntArray>
     }
 
     // Array of all elements smaller than pivot
-    PartIntArray lower = new PartIntArray(arr.getArray(), 0, lowerPrfxSum);
+    PartIntArray lower = new PartIntArray(arr.getArray(), arr.getStart(), lowerPrfxSum - arr.getStart());
+
 
     int higherPrfxSum = lowerPrfxSum;
 
@@ -106,17 +101,12 @@ public class ParallelSplit extends RecursiveTask<Pair<PartIntArray,PartIntArray>
     }
 
     // Array of all elemts bigger or equal than pivot 
-    PartIntArray higher = new PartIntArray(arr.getArray(), lowerPrfxSum, arr.length - lowerPrfxSum);
-
-    System.out.println("lower: " + lower.toString());
-    System.out.println("higher: " + higher.toString());
+    PartIntArray higher = new PartIntArray(arr.getArray(), lowerPrfxSum, arr.length - (lowerPrfxSum - arr.getStart()));
 
     return new Pair<PartIntArray,PartIntArray>(lower, higher);
   } 
 
   protected void writeTo(int[] dest, PartIntArray arr, int index) {
-    System.out.println("arr length: " + arr.length);
-    System.out.println("dest length: " + dest.length);
     for (int i = 0; i < arr.length; i++) {
       dest[index + i] = arr.get(i);
     }

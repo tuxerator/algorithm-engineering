@@ -9,8 +9,11 @@ import java.util.Arrays;
 public class App {
 
   public static void main(String[] args) {
-    int[] arr = {5,2,7,1,89,9,1,3,5,2,3,56647,1234,5,4,413,23425,431};
-    quickSort(arr, 0, arr.length -1);
+    int[] arr = InputGenerator.generate(10000);
+    // quickSort(arr, 0, arr.length -1);
+
+    // arr = InputGenerator.generate(100000);
+    ParallelQuickSort.parallelQuickSort(arr, 4);
     System.out.println(Arrays.toString(arr));
   }
 
