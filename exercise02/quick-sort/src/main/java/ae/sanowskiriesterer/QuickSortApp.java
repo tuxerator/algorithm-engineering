@@ -6,15 +6,16 @@ import java.util.Arrays;
  * Classical quick-sort
  *
  */
-public class App {
+public class QuickSortApp {
 
   public static void main(String[] args) {
-    int[] arr = InputGenerator.generate(10000);
-    // quickSort(arr, 0, arr.length -1);
-
+    int[] arr = InputGenerator.generate(Integer.parseInt(args[0]));
     // arr = InputGenerator.generate(100000);
-    ParallelQuickSort.parallelQuickSort(arr, 4);
-    System.out.println(Arrays.toString(arr));
+    double start = System.nanoTime();
+    QuickSort.quickSort(arr);
+    double end = System.nanoTime();
+    System.out.println((end-start)/1000000);
+    //System.out.println(Arrays.toString(arr));
   }
 
   public static void quickSort(int[] arr, int i_low, int i_high) {

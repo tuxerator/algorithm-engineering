@@ -11,7 +11,7 @@ public class ParallelQuickSort extends RecursiveAction {
   public static void parallelQuickSort(int[] arr, int p) {
     ForkJoinPool forkJoinPool = new ForkJoinPool(p);
 
-    ParallelQuickSort parallelQuickSortTask = new ParallelQuickSort(new PartIntArray(arr, 0, arr.length), 1000, p);
+    ParallelQuickSort parallelQuickSortTask = new ParallelQuickSort(new PartIntArray(arr, 0, arr.length), 500, p);
     forkJoinPool.invoke(parallelQuickSortTask);
 
     forkJoinPool.shutdown();
@@ -24,13 +24,13 @@ public class ParallelQuickSort extends RecursiveAction {
   }
 
   protected void compute() {
-    if (arr.length <= 1) {
-      return;
-    }
-    // if (arr.length <= threshhold) {
-    //   QuickSort.quickSort(arr);
-    //   return;
-    // }
+    //if (arr.length <= 1) {
+     // return;
+    //}
+    if (arr.length <= threshhold) {
+       QuickSort.quickSort(arr);
+       return;
+     }
 
     int i_pivot = (int) (Math.random() * (arr.length - 1));
     int pivot = arr.get(i_pivot);
