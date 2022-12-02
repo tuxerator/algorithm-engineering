@@ -10,7 +10,7 @@ public class ParallelQuickSort extends RecursiveAction {
 
   public static void parallelQuickSort(int[] arr, int p) {
     ForkJoinPool forkJoinPool = new ForkJoinPool(p);
-
+    
     ParallelQuickSort parallelQuickSortTask = new ParallelQuickSort(new PartIntArray(arr, 0, arr.length), 500, p);
     forkJoinPool.invoke(parallelQuickSortTask);
 
