@@ -48,6 +48,8 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+          </configuration>
           <version>3.8.0</version>
         </plugin>
         <plugin>

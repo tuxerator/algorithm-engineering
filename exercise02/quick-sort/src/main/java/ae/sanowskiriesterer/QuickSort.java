@@ -1,10 +1,13 @@
 package ae.sanowskiriesterer;
 
+import java.util.Random;
+
 /**
  * Static class containing classical quick-sort
  *
  */
 public class QuickSort {
+  private static Random random = new Random();
 
   public static void quickSort(int[] arr) {
     quickSort(new PartIntArray(arr, 0, arr.length));
@@ -21,7 +24,7 @@ public class QuickSort {
   }
 
   public static int partition(PartIntArray arr) {
-    int i_pivot = (int) (Math.random() * (arr.length));
+    int i_pivot = random.nextInt(0, arr.length);
     int pivot = arr.get(i_pivot);
 
     arr.set(arr.get(arr.length - 1), i_pivot);

@@ -1,7 +1,5 @@
 package ae.sanowskiriesterer;
 
-import java.util.Arrays;
-
 /**
  * Classical quick-sort
  *

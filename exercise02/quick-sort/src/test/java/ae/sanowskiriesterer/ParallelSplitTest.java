@@ -2,7 +2,6 @@ package ae.sanowskiriesterer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
@@ -23,35 +22,35 @@ class ParallelSplitTest {
 
     PartIntArray partArr = new PartIntArray(arr, 0, arr.length - 1);
 
-    parallelSplit = new ParallelSplit(partArr, (arr.length - 1) / 4, pivot);
+    // parallelSplit = new ParallelSplit(partArr, (arr.length - 1) / 4, pivot);
   }
 
-  @Test
-  void parallelSplit() {
-    ForkJoinTask<Pair<PartIntArray,PartIntArray>> future =  forkJoinPool.submit(parallelSplit);
+  // @Test
+  // void parallelSplit() {
+  //   ForkJoinTask<Pair<PartIntArray,PartIntArray>> future =  forkJoinPool.submit(parallelSplit);
 
-    Pair<PartIntArray,PartIntArray> result;
-    
-    try {
-      result = future.get();
+  //   Pair<PartIntArray,PartIntArray> result;
+  //   
+  //   try {
+  //     result = future.get();
 
-      if (result.getValue().length == 0) {
-        arr[arr.length - 1] = pivot;
-      }
-      else {
-        arr[arr.length - 1] = result.getValue().get(0);
-        result.getValue().set(pivot, 0);
-      }
+  //     if (result.getValue().length == 0) {
+  //       arr[arr.length - 1] = pivot;
+  //     }
+  //     else {
+  //       arr[arr.length - 1] = result.getValue().get(0);
+  //       result.getValue().set(pivot, 0);
+  //     }
 
-      for (int i = 0; i < result.getValue().getStart(); i++) {
-        assertTrue(arr[i] < pivot);
-      }
+  //     for (int i = 0; i < result.getValue().getStart(); i++) {
+  //       assertTrue(arr[i] < pivot);
+  //     }
 
-      for (int i = result.getValue().getStart(); i < arr.length; i++) {
-        assertTrue(arr[i] >= pivot);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+  //     for (int i = result.getValue().getStart(); i < arr.length; i++) {
+  //       assertTrue(arr[i] >= pivot);
+  //     }
+  //   } catch (Exception e) {
+  //     e.printStackTrace();
+  //   }
+  // }
 }
