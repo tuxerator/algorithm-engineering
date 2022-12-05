@@ -31,7 +31,7 @@ public class ParallelQuickSortTest {
     //   streamBuilder.add(arguments(InputGenerator.generate(100000), (int) (Math.random() * Runtime.getRuntime().availableProcessors()))); 
     // }
 
-    return stream.limit(10L);
+    return stream.limit(100L);
   }
 
   static boolean isSorted(int[] arr) {
