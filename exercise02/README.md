@@ -24,7 +24,7 @@ Move into the **source** directory.
 
 ### Classical merge and quick-sort
 
-    java -cp target/classes ae.sanowskiriesterer.{Mergesort,QuickSort}
+    java -cp target/classes ae.sanowskiriesterer.{Mergesort,QuickSort} [instance_size]
 
 ### Parallel merge and quick-sort
 
