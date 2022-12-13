@@ -1,11 +1,15 @@
 package ae.sanowskiriesterer;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class SimpleBST {
     //public ArrayList<Vertex> graph;
     //public ArrayList<Vertex> cover;
     public static int k;
+    public static Stack<ArrayList<Vertex[]>> stack = new Stack<ArrayList<Vertex[]>>();
+    public static Stack<Vertex> cover = new Stack<Vertex>();
+    public static ArrayList<Vertex> graph = new ArrayList<Vertex>();
 
     public static void main(String[] args){
         Vertex v1 = new Vertex(1);
@@ -25,7 +29,7 @@ public class SimpleBST {
         v7.addNeighbors(v3,v4,v8);
         v8.addNeighbors(v5,v6,v7);
 
-        ArrayList<Vertex> graph = new ArrayList<Vertex>();
+        //ArrayList<Vertex> graph = new ArrayList<Vertex>();
         graph.add(v1);
         graph.add(v2);
         graph.add(v3);
@@ -35,15 +39,15 @@ public class SimpleBST {
         graph.add(v7);
         graph.add(v8);
 
-        k = 5;
-        ArrayList<Vertex> result = simpleBST(graph,new ArrayList<Vertex>());
-        System.out.println(result.size()+"\n");
-        for(Vertex v : result){
+        k = Integer.parseInt(args[0]);
+        simpleBST(cover);
+        System.out.println(cover.size()+"\n");
+        for(Vertex v : cover){
             System.out.println(v.id);
         }
     }
 
-    public static ArrayList<Vertex> simpleBST(ArrayList<Vertex> graph, ArrayList<Vertex> cover){
+    public static void simpleBST(Stack<Vertex> cover){
         Vertex[] edge = new Vertex[2];
         Boolean noEdges = true;
         for(Vertex v : graph){
@@ -55,50 +59,48 @@ public class SimpleBST {
             }
         }
         if(cover.size() == k && !noEdges){
-            cover.clear();
-            return cover;
+            cover.push(new Vertex(-1));
+            return;
         } else if(cover.size() <= k && noEdges){
-            return cover;
+            return;
         }
-        // ArrayList<Vertex> graphA = new ArrayList<Vertex>(graph);
-        ArrayList<Vertex> graphA = copyGraph(graph);
-        // System.out.println("Graph A:");
-        // for(Vertex v : graphA){
-        //     System.out.println(v.id+":");
-        //     for(Vertex w : v.neighbors){
-        //         System.out.println(w.id);
-        //     }
-        // }
-        remove(graphA, edge[0]);
-        ArrayList<Vertex> coverA = new ArrayList<Vertex>(cover);
-        coverA.add(edge[0]);
-        ArrayList<Vertex> coverAResult = simpleBST(graphA, coverA);
-        if(coverAResult.size() > 0){
-            return coverAResult;
+        //if(!stack.empty()){
+            //addToGraph(stack.pop());
+        //}
+        stack.push(remove(edge[0]));
+        cover.push(edge[0]);
+        //Stack<Vertex> copyCover = (Stack<Vertex>) cover.clone();
+        simpleBST(cover);
+        if(cover.size() > 0 && cover.peek().id >= 0){
+            return;
+        } else {
+            cover.pop();
         }
-        // ArrayList<Vertex> graphB = new ArrayList<Vertex>(graph);
-        ArrayList<Vertex> graphB = copyGraph(graph);
-        // System.out.println("Graph B:");
-        // for(Vertex v : graphB){
-        //     System.out.println(v.id+":");
-        //     for(Vertex w : v.neighbors){
-        //         System.out.println(w.id);
-        //     }
-        // }
-        remove(graphB, edge[1]);
-        ArrayList<Vertex> coverB = new ArrayList<Vertex>(cover);
-        coverB.add(edge[1]);
-        ArrayList<Vertex> coverBResult = simpleBST(graphB, coverB);
-        if(coverBResult.size() > 0){
-            return coverBResult;
+        //cover = (Stack<Vertex>) copyCover.clone();
+        while(cover.peek() != edge[0]){
+            cover.pop();
         }
-        cover.clear();
-        return cover;
+        cover.pop();
+        addToGraph(stack.pop());
+        stack.push(remove(edge[1]));
+        cover.push(edge[1]);
+        simpleBST(cover);
+        if(cover.size() > 0 && cover.peek().id >= 0){
+            return;
+        } else {
+            cover.pop();
+        }
+        cover.push(new Vertex(-1));
+        return;
 
     }
 
-    public static void remove(ArrayList<Vertex> graph, Vertex v){
+    public static ArrayList<Vertex[]> remove(Vertex v){
+        
+        ArrayList<Vertex[]> edges = new ArrayList<Vertex[]>();
         for(Vertex w : v.neighbors) {
+            Vertex[] edge = {v,w};
+            edges.add(edge);
             for(Vertex x : w.neighbors){
                 if(x.id==v.id){
                     w.neighbors.remove(x);
@@ -107,15 +109,14 @@ public class SimpleBST {
             }
         }
         v.neighbors.clear();
+        return edges;
 
     }
 
-    public static ArrayList<Vertex> copyGraph(ArrayList<Vertex> graph){
-
-        ArrayList<Vertex> clone = new ArrayList<Vertex>(graph);
-        for(int i = 0; i < clone.size(); i++){
-            clone.get(i).neighbors = new ArrayList<Vertex>(graph.get(i).neighbors);
+    public static void addToGraph(ArrayList<Vertex[]> edges){
+        for(Vertex[] edge : edges){
+            edge[0].neighbors.add(edge[1]);
+            edge[1].neighbors.add(edge[0]);
         }
-        return clone;
     }
 }
