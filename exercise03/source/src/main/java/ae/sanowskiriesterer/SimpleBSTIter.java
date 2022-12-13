@@ -1,15 +1,14 @@
 package ae.sanowskiriesterer;
-
 import java.util.ArrayList;
 import java.util.Stack;
-
-public class SimpleBST {
+public class SimpleBSTIter {
     //public ArrayList<Vertex> graph;
     //public ArrayList<Vertex> cover;
     public static int k;
     public static Stack<ArrayList<Vertex[]>> stack = new Stack<ArrayList<Vertex[]>>();
     public static Stack<Vertex> cover = new Stack<Vertex>();
     public static ArrayList<Vertex> graph = new ArrayList<Vertex>();
+    public static Stack<Vertex[]> edges = new Stack<Vertex[]>();
 
     public static void main(String[] args){
         Vertex v1 = new Vertex(1);
@@ -48,6 +47,49 @@ public class SimpleBST {
     }
 
     public static void simpleBST(Stack<Vertex> cover){
+        do{
+            Vertex[] edge = new Vertex[2];
+            Boolean noEdges = true;
+            for(Vertex v : graph){
+                if(v.neighbors.size() > 0){
+                    noEdges = false;
+                    edge[0] = v;
+                    edge[1] = v.neighbors.get(0);
+                    //edges.push(edge);
+                    break;
+                }
+            }
+            if(cover.size() == k && !noEdges){
+                cover.push(new Vertex(-1));
+                continue;
+            } else if(cover.size() <= k && noEdges){
+                continue;
+            }
+            stack.push(remove(edges.peek()[0]));
+            cover.push(edges.peek()[0]);
+            simpleBST(cover);
+            if(cover.size() > 0 && cover.peek().id >= 0){
+                continue;
+            } else {
+                cover.pop();
+            }
+            while(cover.peek() != edges.peek()[0]){
+                cover.pop();
+            }
+            cover.pop();
+            addToGraph(stack.pop());
+            stack.push(remove(edges.peek()[1]));
+            cover.push(edges.peek()[1]);
+            simpleBST(cover);
+            if(cover.size() > 0 && cover.peek().id >= 0){
+                continue;
+            } else {
+                cover.pop();
+                addToGraph(stack.pop());
+            }
+            cover.push(new Vertex(-1));
+            edges.pop();
+        } while(!edges.empty());
         Vertex[] edge = new Vertex[2];
         Boolean noEdges = true;
         for(Vertex v : graph){
@@ -115,4 +157,6 @@ public class SimpleBST {
             edge[1].neighbors.add(edge[0]);
         }
     }
+
+
 }
