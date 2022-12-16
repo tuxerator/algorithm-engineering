@@ -29,4 +29,7 @@ public class Vertex {
         }
     }
 
+  // public String toString() {
+  //   return "ID: " + id + " neighbors: " + neighbors.toString(); 
+  // }
 }
