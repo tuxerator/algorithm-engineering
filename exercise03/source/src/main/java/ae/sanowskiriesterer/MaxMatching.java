@@ -2,13 +2,10 @@ package ae.sanowskiriesterer;
 
 import java.util.ArrayList;
 
-/**
- * Hello world!
- *
- */
+/** Hello world! */
 public class MaxMatching {
 
-    public static ArrayList<Vertex> cover;  //maybe private
+  public static ArrayList<Vertex> cover; // maybe private
 
     public static void main( String[] args ) throws Exception{
         /*Vertex v1 = new Vertex(0);
@@ -50,8 +47,8 @@ public class MaxMatching {
             System.out.println(v.id+1);
         }
 
-
-    }
+    System.out.println(result.size());
+  }
 
     public static ArrayList<Vertex> getMatching(ArrayList<Vertex> graph) {
         cover = new ArrayList<Vertex>();

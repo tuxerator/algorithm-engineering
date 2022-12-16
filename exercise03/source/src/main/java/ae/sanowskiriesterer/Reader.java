@@ -1,34 +1,32 @@
 package ae.sanowskiriesterer;
 
-import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.lang.Exception;
-import java.lang.String;
+import java.util.ArrayList;
 
 public class Reader {
 
-    public static void main(String[] args)throws Exception{
-        String file = args[0];
-        ArrayList<Vertex> graph = read(file);
-        /*for(Vertex v : graph) {
-            System.out.println(v.id+1+": ");
-            for(Vertex u : v.neighbors){
-                System.out.println(u.id+1);
-            }
-        }*/
+  public static void main(String[] args) throws Exception {
+    /*String file = args[0];
+    ArrayList<Vertex> graph = read(file);
+    for(Vertex v : graph) {
+        System.out.println(v.id+1+": ");
+        for(Vertex u : v.neighbors){
+            System.out.println(u.id+1);
+        }
+    }*/
 
-    }
+  }
 
-    public static ArrayList<Vertex> read(String pathToFile) throws Exception{
+  public static ArrayList<Vertex> read(String pathToFile) throws Exception {
 
-        ArrayList<Vertex> graph = new ArrayList<Vertex>();
-        
-        BufferedReader reader = new BufferedReader(new FileReader(new File (pathToFile)));
-		String line;
-        while ((line = reader.readLine()) != null) {
-            if(line.charAt(0) == 'c') {
+    ArrayList<Vertex> graph = new ArrayList<Vertex>();
+
+    BufferedReader reader = new BufferedReader(new FileReader(new File(pathToFile)));
+    String line;
+    while ((line = reader.readLine()) != null) {
+      if (line.charAt(0) == 'c') {
 
             } else if(line.charAt(0) == 'p') {
                 String[] words = line.split(" ");
