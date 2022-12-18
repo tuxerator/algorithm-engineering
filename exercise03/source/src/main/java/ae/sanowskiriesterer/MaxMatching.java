@@ -35,19 +35,19 @@ public class MaxMatching {
         graph.add(v7);
         graph.add(v8);*/
         ArrayList<Vertex> graph = Reader.read(args[0]);
-        // int vertices = graph.size();
-        // double start = System.nanoTime();
+        int vertices = graph.size();
+        double start = System.nanoTime();
         ArrayList<Vertex> result = getMatching(graph);
-        // double end = System.nanoTime();
-        // System.out.println(vertices);
-        // System.out.println((end-start)/1000000);
-        // System.out.println(result.size());
+        double end = System.nanoTime();
+        System.out.println(vertices);
+        System.out.println((end-start)/1000000);
+        System.out.println(result.size());
 
-        for(Vertex v : result){
-            System.out.println(v.id+1);
-        }
+    //     for(Vertex v : result){
+    //         System.out.println(v.id+1);
+    //     }
 
-    System.out.println(result.size());
+    // System.out.println(result.size());
   }
 
     public static ArrayList<Vertex> getMatching(ArrayList<Vertex> graph) {
