@@ -7,7 +7,7 @@ public class SimpleBST {
     //public ArrayList<Vertex> graph;
     //public ArrayList<Vertex> cover;
     public static int k;
-    public static Stack<ArrayList<Vertex[]>> stack = new Stack<ArrayList<Vertex[]>>();
+    public static Stack<ArrayList<Integer[]>> stack = new Stack<ArrayList<Integer[]>>();
     public static Stack<Vertex> cover = new Stack<Vertex>();
     public static ArrayList<Vertex> graph = new ArrayList<Vertex>();
 
@@ -107,16 +107,20 @@ public class SimpleBST {
 
     }
 
-    public static ArrayList<Vertex[]> remove(Vertex v){
+    public static ArrayList<Integer[]> remove(Vertex v){
         
-        ArrayList<Vertex[]> edges = new ArrayList<Vertex[]>();
+        ArrayList<Integer[]> edges = new ArrayList<Integer[]>();
         for(Integer w : v.neighbors) {
-            Vertex[] edge = {v,graph.get(w)};
+            Integer[] edge = {v.id,w};
             edges.add(edge);
-            for(Integer x : graph.get(w).neighbors){
-                if(x==v.id){
-                    graph.get(w).neighbors.remove(x);
-                    break;
+            if( w == v.id){
+
+            } else {
+                for(Integer x : graph.get(w).neighbors){
+                    if(x==v.id){
+                        graph.get(w).neighbors.remove(x);
+                        break;
+                    }
                 }
             }
         }
@@ -125,13 +129,13 @@ public class SimpleBST {
 
     }
 
-    public static void addToGraph(ArrayList<Vertex[]> edges){
-        for(Vertex[] edge : edges){
-            if(edge[0].id == edge[1].id) {
-                edge[0].neighbors.add(edge[0].id);
+    public static void addToGraph(ArrayList<Integer[]> edges){
+        for(Integer[] edge : edges){
+            if(edge[0] == edge[1]) {
+                graph.get(edge[0]).neighbors.add(edge[0]);
             } else {
-                edge[0].neighbors.add(edge[1].id);
-                edge[1].neighbors.add(edge[0].id);
+                graph.get(edge[0]).neighbors.add(edge[1]);
+                graph.get(edge[1]).neighbors.add(edge[0]);
             }
         }
     }

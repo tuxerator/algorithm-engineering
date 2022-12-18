@@ -55,14 +55,22 @@ public class MaxMatching {
         for(Vertex v : graph) {
             if(v.neighbors.size() >= 1){
                 Vertex u = graph.get(v.neighbors.get(0));
-                cover.add(v);
-                cover.add(u);
+                if (v.id == u.id) {
+                    cover.add(v);
+                } else {
+                    cover.add(v);
+                    cover.add(u);
+                }
                 for(Integer w : v.neighbors){
-                    graph.get(w).neighbors.remove((Integer) v.id);
+                    if(w != v.id){
+                        graph.get(w).neighbors.remove((Integer) v.id);
+                    }
                 }
                 v.neighbors.clear();
                 for(Integer w : u.neighbors){
-                    graph.get(w).neighbors.remove((Integer) u.id);
+                    if(w != u.id) {
+                        graph.get(w).neighbors.remove((Integer) u.id);
+                    }
                 }
                 u.neighbors.clear();
             }
