@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Frame {
   private ArrayList<Vertex> graph;
-  private ArrayList<Vertex[]> removedEdges = new ArrayList<>();
+  private ArrayList<Integer[]> removedEdges = new ArrayList<>();
   private Vertex v;
   private Vertex w;
   private boolean visitedV = false;
@@ -20,7 +20,7 @@ public class Frame {
       if (vertex.neighbors.size() > 0) {
         noEdges = false;
         this.v = vertex;
-        this.w = vertex.neighbors.get(0);
+        this.w = graph.get(vertex.neighbors.get(0));
       }
     }
   }
@@ -81,11 +81,11 @@ public class Frame {
     this.k = k;
   }
 
-  public ArrayList<Vertex[]> getRemovedEdges() {
+  public ArrayList<Integer[]> getRemovedEdges() {
     return removedEdges;
   }
 
-  public void setRemovedEdges(ArrayList<Vertex[]> removedEdges) {
+  public void setRemovedEdges(ArrayList<Integer[]> removedEdges) {
     this.removedEdges = removedEdges;
   }
 
