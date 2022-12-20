@@ -70,7 +70,7 @@ public class SimpleBSTIter {
       }
 
       if (!frame.isVisitedV()) {
-        frame.setRemovedEdges(remove(frame.getV()));
+        frame.setRemovedEdges(remove(frame.getV(), graph));
         cover.push(frame.getV());
         callStack.push(new Frame(graph, k));
         frame.setVisitedV(true);
@@ -86,8 +86,8 @@ public class SimpleBSTIter {
         cover.pop();
         cover.pop();
 
-        addToGraph(frame.getRemovedEdges());
-        frame.setRemovedEdges(remove(frame.getW()));
+        addToGraph(frame.getRemovedEdges(), graph);
+        frame.setRemovedEdges(remove(frame.getW(), graph));
         cover.push(frame.getW());
         callStack.push(new Frame(graph, k));
         frame.setVisitedW(true);
@@ -100,34 +100,43 @@ public class SimpleBSTIter {
         cover.push(new Vertex(-1));
       }
 
-      addToGraph(frame.getRemovedEdges());
+      addToGraph(frame.getRemovedEdges(), graph);
       callStack.pop();
     }
 
     return cover.toArray(new Vertex[cover.size()]);
   }
 
-  public static ArrayList<Vertex[]> remove(Vertex v) {
+    public static ArrayList<Integer[]> remove(Vertex v, ArrayList<Vertex> graph){
+        
+        ArrayList<Integer[]> edges = new ArrayList<Integer[]>();
+        for(Integer w : v.neighbors) {
+            Integer[] edge = {v.id,w};
+            edges.add(edge);
+            if( w == v.id){
 
-    ArrayList<Vertex[]> edges = new ArrayList<Vertex[]>();
-    for (Vertex w : v.neighbors) {
-      Vertex[] edge = {v, w};
-      edges.add(edge);
-      for (Vertex x : w.neighbors) {
-        if (x.id == v.id) {
-          w.neighbors.remove(x);
-          break;
+            } else {
+                for(Integer x : graph.get(w).neighbors){
+                    if(x==v.id){
+                        graph.get(w).neighbors.remove(x);
+                        break;
+                    }
+                }
+            }
         }
-      }
-    }
-    v.neighbors.clear();
-    return edges;
-  }
+        v.neighbors.clear();
+        return edges;
 
-  public static void addToGraph(ArrayList<Vertex[]> edges) {
-    for (Vertex[] edge : edges) {
-      edge[0].neighbors.add(edge[1]);
-      edge[1].neighbors.add(edge[0]);
     }
-  }
+
+    public static void addToGraph(ArrayList<Integer[]> edges, ArrayList<Vertex> graph){
+        for(Integer[] edge : edges){
+            if(edge[0] == edge[1]) {
+                graph.get(edge[0]).neighbors.add(edge[0]);
+            } else {
+                graph.get(edge[0]).neighbors.add(edge[1]);
+                graph.get(edge[1]).neighbors.add(edge[0]);
+            }
+        }
+    }
 }
