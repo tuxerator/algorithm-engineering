@@ -1,7 +1,5 @@
 package ae.sanowskiriesterer;
 
-//import java.lang.Math;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class TwoOpt {
