@@ -2,9 +2,9 @@ package ae.sanowskiriesterer;
 
 public class Edge {
 
-    Node nodeA;
-    Node nodeB;
-    Float weight;
+    public Node nodeA;
+    public Node nodeB;
+    public float weight;
 
     public Edge(Node one, Node two){
         this.nodeA = one;

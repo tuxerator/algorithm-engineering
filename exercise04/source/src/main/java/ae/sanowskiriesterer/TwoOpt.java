@@ -6,51 +6,28 @@ public class TwoOpt {
 
     public static LinkedList<Edge> edges;
     public static LinkedList<Node> nodes;
+    public static int edgeSwaps;
 
     public static void main(String[] args) throws Exception{
 
-        //CoordSystem c = Reader.read(args[0]);
         nodes = new LinkedList<Node>();
-        //nodes = c.nodes;
-        Node a = new Node(1,2);
-        Node b = new Node(2,1);
-        Node c = new Node(4,3);
-        Node d = new Node(5,1);
-        Node e = new Node(3,4);
-        Node f = new Node(6,4);
-        Node g = new Node(7,2);
-
-        nodes.add(a);
-        nodes.add(b);
-        nodes.add(c);
-        nodes.add(d);
-        nodes.add(e);
-        nodes.add(f);
-        nodes.add(g);
-
+        // CoordSystem c = Reader.read(args[0]);
+        // nodes = c.nodes;
+        nodes = Reader.read(args[0]);
+        float start = System.currentTimeMillis();
         createTour();
+        float end = System.currentTimeMillis();
+        float runningTime = end - start;
+        System.out.println(runningTime+","+edgeSwaps);
 
-        for(Edge edge : edges){
-            System.out.println(edge.nodeA.xCoord+","+edge.nodeA.yCoord+";"+edge.nodeB.xCoord+","+edge.nodeB.yCoord);
-        }
-
-        //TODO write test
         
     }
 
-    // /**
-    //  * Calculates the weights of each edge
-    //  */
-    // public static void calculateWeights() {
-    //     for(Edge e : edges) {
-    //         e.weight = euclidianDistance(e.nodeA, e.nodeB);
-    //     }
-    // }
 
     /**
      * 
      */
-    public static void createTour() {
+    public static void createTour() throws Exception {
         edges = new LinkedList<Edge>();
         for(int i = 1; i < nodes.size(); i++) {
             Node a = nodes.get(i-1);
@@ -60,15 +37,18 @@ public class TwoOpt {
         Node a = nodes.get(nodes.size()-1);
         Node b = nodes.get(0);
         edges.add(new Edge(a,b));
-        System.out.println("Initial tour created, start improving");
+        //DrawTour.draw(edges,"initialDjibouti.svg");
+        //System.out.println("Initial tour created, start improving");
         improveTour();
+        //DrawTour.draw(edges, "resultDjibouti.svg");
     }
 
     /**
      * Searches for edges that would improve the tour if swapped and swaps them
      */
-    private static void improveTour(){
+    public static void improveTour(){
         Boolean stillSwapping = true;
+        edgeSwaps = 0;
         //as long as there are edges that can be improved, search for them
         while(stillSwapping){
             stillSwapping = false;
@@ -76,6 +56,7 @@ public class TwoOpt {
                 for(int j = i+2; i==0 ?  j < edges.size() - 1 : j < edges.size(); j++){ //j=i+2 because you can't swap two incident edges
                     if(isSwappedBetter(i, j)){
                         stillSwapping = true;
+                        edgeSwaps++;
                         swapEdges(i, j);
                     }
                     
