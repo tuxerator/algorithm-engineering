@@ -2,7 +2,7 @@ package ae.sanowskiriesterer;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import ae.sanowskiriesterer.Edge;
 
@@ -29,7 +29,7 @@ public class DrawTour {
         // draw(edges,"example.svg");
     }
 
-    public static void draw(LinkedList<Edge> tour, String outputFile) throws Exception{
+    public static void draw(ArrayList<Edge> tour, String outputFile) throws Exception{
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
         getRange(tour);
         writer.write("<svg width=\""+xValue+"\" height=\""+yValue+"\">");
@@ -61,7 +61,7 @@ public class DrawTour {
 
     }
 
-    private static void getRange(LinkedList<Edge> edges){
+    private static void getRange(ArrayList<Edge> edges){
 
         xMin = edges.get(0).nodeA.xCoord;
         xMax = edges.get(0).nodeA.xCoord;

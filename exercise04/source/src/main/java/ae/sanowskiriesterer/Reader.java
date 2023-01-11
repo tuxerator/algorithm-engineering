@@ -3,7 +3,7 @@ package ae.sanowskiriesterer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class Reader {
 
@@ -13,13 +13,13 @@ public class Reader {
         
     }
     
-    public static LinkedList<Node> read(String pathToFile) throws Exception {
+    public static ArrayList<Node> read(String pathToFile) throws Exception {
         // float minX = 999999999;
         // float maxX = 0;
         // float minY = 999999999;
         // float maxY = 0;
-        LinkedList<Node> nodes = new LinkedList<Node>();
-        nodes = new LinkedList<Node>();
+        ArrayList<Node> nodes = new ArrayList<Node>();
+        nodes = new ArrayList<Node>();
 
         BufferedReader reader = new BufferedReader(new FileReader(new File(pathToFile)));
         String line;

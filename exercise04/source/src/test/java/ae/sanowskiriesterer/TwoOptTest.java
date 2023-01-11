@@ -3,7 +3,7 @@ package ae.sanowskiriesterer;
 // import static org.junit.Assert.assertTrue;
 import org.junit.jupiter.api.Test;
 // import java.beans.Transient;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 // import org.junit.Before;
 // import org.junit.Test;
@@ -13,18 +13,18 @@ public class TwoOptTest {
     @Test
     public void testChangePathDirection1(){
         System.out.println("Changepath1");
-        TwoOpt.nodes = new LinkedList<Node>();
+        TwoOpt.nodes = new ArrayList<Node>();
         Node a = new Node(1,2);
         Node b = new Node(2,1);
         Node c = new Node(4,3);
         Node d = new Node(1,1);
-        TwoOpt.nodes = new LinkedList<Node>();
+        TwoOpt.nodes = new ArrayList<Node>();
         TwoOpt.nodes.add(a);
         TwoOpt.nodes.add(b);
         TwoOpt.nodes.add(c);
         TwoOpt.nodes.add(d);
 
-        TwoOpt.edges = new LinkedList<Edge>();
+        TwoOpt.edges = new ArrayList<Edge>();
         for(int i = 1; i < TwoOpt.nodes.size(); i++) {
             Node a1 = TwoOpt.nodes.get(i-1);
             Node b1 = TwoOpt.nodes.get(i);
@@ -35,7 +35,7 @@ public class TwoOptTest {
         TwoOpt.edges.add(new Edge(a1,b1));
         TwoOpt.changePathDirection(0, TwoOpt.edges.size()-2);
 
-        LinkedList<Edge> result = new LinkedList<Edge>();
+        ArrayList<Edge> result = new ArrayList<Edge>();
         result.add(new Edge(d,c));
         result.add(new Edge(c,b));
         result.add(new Edge(b,a));
@@ -47,18 +47,18 @@ public class TwoOptTest {
     @Test
     public void testChangePathDirection2(){
         System.out.println("changePath2");
-        TwoOpt.nodes = new LinkedList<Node>();
+        TwoOpt.nodes = new ArrayList<Node>();
         Node a = new Node(1,2);
         Node b = new Node(2,1);
         Node c = new Node(4,3);
         Node d = new Node(1,1);
-        TwoOpt.nodes = new LinkedList<Node>();
+        TwoOpt.nodes = new ArrayList<Node>();
         TwoOpt.nodes.add(a);
         TwoOpt.nodes.add(b);
         TwoOpt.nodes.add(c);
         TwoOpt.nodes.add(d);
 
-        TwoOpt.edges = new LinkedList<Edge>();
+        TwoOpt.edges = new ArrayList<Edge>();
         for(int i = 1; i < TwoOpt.nodes.size(); i++) {
             Node a1 = TwoOpt.nodes.get(i-1);
             Node b1 = TwoOpt.nodes.get(i);
@@ -69,7 +69,7 @@ public class TwoOptTest {
         TwoOpt.edges.add(new Edge(a1,b1));
         TwoOpt.changePathDirection(TwoOpt.edges.size()-1, 1);
 
-        LinkedList<Edge> result = new LinkedList<Edge>();
+        ArrayList<Edge> result = new ArrayList<Edge>();
         result.add(new Edge(b,a));
         result.add(new Edge(a,d));
         result.add(new Edge(c,d));
@@ -82,7 +82,7 @@ public class TwoOptTest {
     @Test
     public void testSwappingEdges1(){
         System.out.println("Swapping1");
-        TwoOpt.nodes = new LinkedList<Node>();
+        TwoOpt.nodes = new ArrayList<Node>();
         Node a = new Node(1,2);
         Node b = new Node(2,1);
         Node c = new Node(4,3);
@@ -93,7 +93,7 @@ public class TwoOptTest {
         TwoOpt.nodes.add(c);
         TwoOpt.nodes.add(d);
 
-        TwoOpt.edges = new LinkedList<Edge>();
+        TwoOpt.edges = new ArrayList<Edge>();
         for(int i = 1; i < TwoOpt.nodes.size(); i++) {
             Node a1 = TwoOpt.nodes.get(i-1);
             Node b1 = TwoOpt.nodes.get(i);
@@ -105,7 +105,7 @@ public class TwoOptTest {
 
         TwoOpt.swapEdges(0, TwoOpt.edges.size()-2);
 
-        LinkedList<Edge> result = new LinkedList<Edge>();
+        ArrayList<Edge> result = new ArrayList<Edge>();
         result.add(new Edge(a, c));
         result.add(new Edge(c, b));
         result.add(new Edge(b, d));
@@ -126,7 +126,7 @@ public class TwoOptTest {
         Node f = new Node (5,5);
         Node g = new Node (6,6);
         
-        TwoOpt.nodes = new LinkedList<Node>();
+        TwoOpt.nodes = new ArrayList<Node>();
         TwoOpt.nodes.add(a);
         TwoOpt.nodes.add(b);
         TwoOpt.nodes.add(c);
@@ -135,7 +135,7 @@ public class TwoOptTest {
         TwoOpt.nodes.add(f);
         TwoOpt.nodes.add(g);
 
-        TwoOpt.edges = new LinkedList<Edge>();
+        TwoOpt.edges = new ArrayList<Edge>();
         for(int i = 1; i < TwoOpt.nodes.size(); i++) {
             Node a1 = TwoOpt.nodes.get(i-1);
             Node b1 = TwoOpt.nodes.get(i);
@@ -146,7 +146,7 @@ public class TwoOptTest {
         TwoOpt.edges.add(new Edge(a1,b1));
         TwoOpt.swapEdges(1, TwoOpt.edges.size()-1);
 
-        LinkedList<Edge> result = new LinkedList<Edge>();
+        ArrayList<Edge> result = new ArrayList<Edge>();
         result.add(new Edge(b,a));
         result.add(new Edge(a,c));
         result.add(new Edge(c,d));
@@ -159,7 +159,7 @@ public class TwoOptTest {
     }
     
 
-    public boolean isEqual(LinkedList<Edge> a, LinkedList<Edge> b){
+    public boolean isEqual(ArrayList<Edge> a, ArrayList<Edge> b){
         if(a.size() != b.size()){
             System.out.println("First case failure");
             return false;

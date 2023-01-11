@@ -1,16 +1,16 @@
 package ae.sanowskiriesterer;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class TwoOpt {
 
-    public static LinkedList<Edge> edges;
-    public static LinkedList<Node> nodes;
+    public static ArrayList<Edge> edges;
+    public static ArrayList<Node> nodes;
     public static int edgeSwaps;
 
     public static void main(String[] args) throws Exception{
 
-        nodes = new LinkedList<Node>();
+        nodes = new ArrayList<Node>();
         nodes = Reader.read(args[0]);
         float start = System.currentTimeMillis();
         // createTour();
@@ -27,7 +27,7 @@ public class TwoOpt {
      */
     // public static void createTour() throws Exception{
     public static void createTour(float startTime, float duration) throws Exception {
-        edges = new LinkedList<Edge>();
+        edges = new ArrayList<Edge>();
         for(int i = 1; i < nodes.size(); i++) {
             Node a = nodes.get(i-1);
             Node b = nodes.get(i);
@@ -59,9 +59,9 @@ public class TwoOpt {
                         stillSwapping = true;
                         edgeSwaps++;
                         swapEdges(i, j);
-                        if(edgeSwaps == 2012){
-                            DrawTour.draw(edges,"halfLuxembourg.svg");
-                        }
+                        // if(edgeSwaps == 2012){
+                        //     DrawTour.draw(edges,"halfLuxembourg.svg");
+                        // }
                     }
                     //if it is already running longer than duration
                     if(System.currentTimeMillis()-startTime > duration){
