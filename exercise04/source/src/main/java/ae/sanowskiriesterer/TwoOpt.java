@@ -13,8 +13,7 @@ public class TwoOpt {
         nodes = new ArrayList<Node>();
         nodes = Reader.read(args[0]);
         float start = System.currentTimeMillis();
-        // createTour();
-        createTour(System.currentTimeMillis(), 30*60000); // duration: 30 min
+        createTour();
         float end = System.currentTimeMillis();
         float runningTime = end - start;
         System.out.println(runningTime+","+edgeSwaps);
@@ -25,8 +24,7 @@ public class TwoOpt {
     /**
      * 
      */
-    // public static void createTour() throws Exception{
-    public static void createTour(float startTime, float duration) throws Exception {
+    public static void createTour() throws Exception{
         edges = new ArrayList<Edge>();
         for(int i = 1; i < nodes.size(); i++) {
             Node a = nodes.get(i-1);
@@ -37,20 +35,17 @@ public class TwoOpt {
         Node b = nodes.get(0);
         edges.add(new Edge(a,b));
         // DrawTour.draw(edges,"initialLuxembourg.svg");
-        // improveTour();
-        improveTour(startTime, duration);
+        improveTour();
         // DrawTour.draw(edges, "resultLuxembourg.svg");
     }
 
     /**
      * Searches for edges that would improve the tour if swapped and swaps them
      */
-    // public static void improveTour() throws Exception{
-    public static void improveTour(float startTime, float duration) throws Exception{
+    public static void improveTour() throws Exception{
         Boolean stillSwapping = true;
         edgeSwaps = 0;
         //as long as there are edges that can be improved, search for them
-        While:
         while(stillSwapping){
             stillSwapping = false;
             for(int i = 0; i < edges.size(); i++){
@@ -62,10 +57,6 @@ public class TwoOpt {
                         // if(edgeSwaps == 2012){
                         //     DrawTour.draw(edges,"halfLuxembourg.svg");
                         // }
-                    }
-                    //if it is already running longer than duration
-                    if(System.currentTimeMillis()-startTime > duration){
-                        break While;
                     }
                 }
             }
