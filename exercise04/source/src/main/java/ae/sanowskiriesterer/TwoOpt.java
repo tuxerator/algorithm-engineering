@@ -12,10 +12,10 @@ public class TwoOpt {
 
         nodes = new ArrayList<Node>();
         nodes = Reader.read(args[0]);
-        float start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         createTour();
-        float end = System.currentTimeMillis();
-        float runningTime = end - start;
+        long end = System.currentTimeMillis();
+        long runningTime = end - start;
         System.out.println(runningTime+","+edgeSwaps);
         
     }
@@ -84,19 +84,23 @@ public class TwoOpt {
         if(edgeB - edgeA - 1 <= (edges.size()-edgeB-1+edgeA)){
             Edge a = new Edge(edges.get(edgeA).nodeA, edges.get(edgeB).nodeA);
             Edge b = new Edge(edges.get(edgeA).nodeB,edges.get(edgeB).nodeB);
-            edges.remove(edgeA);
-            edges.add(edgeA, a);
-            edges.remove(edgeB);
-            edges.add(edgeB, b);
+            edges.set(edgeA, a);
+            // edges.remove(edgeA);
+            // edges.add(edgeA, a);
+            edges.set(edgeB,b);
+            // edges.remove(edgeB);
+            // edges.add(edgeB, b);
 
             changePathDirection(edgeA+1, edgeB-1);
         } else {
             Edge a = new Edge(edges.get(edgeB).nodeA, edges.get(edgeA).nodeA);
             Edge b = new Edge(edges.get(edgeB).nodeB,edges.get(edgeA).nodeB);
-            edges.remove(edgeA);
-            edges.add(edgeA, b);
-            edges.remove(edgeB);
-            edges.add(edgeB, a);
+            edges.set(edgeA,b);
+            // edges.remove(edgeA);
+            // edges.add(edgeA, b);
+            edges.set(edgeB,a);
+            // edges.remove(edgeB);
+            // edges.add(edgeB, a);
             if(edgeB < edges.size()-1){
                 if(edgeA > 0){
                     changePathDirection(edgeB+1, edgeA-1);    
@@ -126,10 +130,12 @@ public class TwoOpt {
             Edge newStart = new Edge(edges.get(start).nodeB, edges.get(start).nodeA);
             Edge newEnd = new Edge(edges.get(end).nodeB, edges.get(end).nodeA);
             //second swap the positions of the two edges
-            edges.remove(start);
-            edges.add(start,newEnd);
-            edges.remove(end);
-            edges.add(end, newStart);
+            edges.set(start, newEnd);
+            // edges.remove(start);
+            // edges.add(start,newEnd);
+            edges.set(end, newStart);
+            // edges.remove(end);
+            // edges.add(end, newStart);
             if(start + 1 > edges.size()-1){
                 start = 0;
             } else {
@@ -151,18 +157,21 @@ public class TwoOpt {
                 Edge newStart = new Edge(edges.get(start).nodeB, edges.get(start).nodeA);
                 Edge newEnd = new Edge(edges.get(end).nodeB, edges.get(end).nodeA);
                 //second swap the positions of the two edges
-                edges.remove(start);
-                edges.add(start,newEnd);
-                edges.remove(end);
-                edges.add(end, newStart);
+                edges.set(start,newEnd);
+                // edges.remove(start);
+                // edges.add(start,newEnd);
+                edges.set(end,newStart);
+                // edges.remove(end);
+                // edges.add(end, newStart);
                 start++;
                 end--;
             }
             //one node left, if path has odd length, change the direction of that node
             if(isOddLength){
                 Edge newEdge = new Edge(edges.get(start).nodeB, edges.get(start).nodeA);
-                edges.remove(start);
-                edges.add(start,newEdge);
+                edges.set(start,newEdge);
+                // edges.remove(start);
+                // edges.add(start,newEdge);
             }
         }
 
