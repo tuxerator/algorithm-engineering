@@ -39,4 +39,9 @@ public class Cell {
   public int hashCode() {
     return x >= y ? x * x + x + y : x * y * y;
   }
+
+  @Override
+  public String toString() {
+      return "(x: " + x + ", y: " + y + ")";
+  }
 }

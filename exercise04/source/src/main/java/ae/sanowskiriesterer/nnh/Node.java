@@ -37,7 +37,7 @@ public class Node {
 
   @Override
   public String toString() {
-    return "x: " + x + ", y: " + y;
+    return "(ID: " + ID + ", x: " + x + ", y: " + y + ")";
   }
 
   @Override

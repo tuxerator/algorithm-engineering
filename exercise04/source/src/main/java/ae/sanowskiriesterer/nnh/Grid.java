@@ -6,14 +6,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Vector;
-import java.util.stream.Stream;
-import java.util.Iterator;
-
 
 public class Grid {
   private HashMap<Cell, LinkedList<Node>> grid;
-  private HashMap<Integer,Node> coordinates;
+  private HashMap<Integer, Node> coordinates;
 
   private int spacing;
 
@@ -32,6 +28,7 @@ public class Grid {
   public Grid(int spacing, int initialCapacity, float loadFactor) {
     this.spacing = spacing;
     grid = new HashMap<>(initialCapacity, loadFactor);
+    coordinates = new HashMap<>(initialCapacity, loadFactor);
   }
 
   public int getSpacing() {
@@ -60,7 +57,8 @@ public class Grid {
 
   public Node getNode(int ID) {
     Node node = coordinates.get(ID);
-    LinkedList<Node> cell = this.getCell(new Cell((int) node.getX() / spacing, (int) node.getY() / spacing));
+    LinkedList<Node> cell =
+        this.getCell(new Cell((int) node.getX() / spacing, (int) node.getY() / spacing));
     ListIterator<Node> iter = cell.listIterator();
     while (iter.hasNext()) {
       Node n = iter.next();
@@ -73,9 +71,20 @@ public class Grid {
 
   public boolean removeFromGrid(int ID) {
     Node node = coordinates.get(ID);
-    LinkedList<Node> cell = this.getCell(new Cell((int) node.getX() / spacing, (int) node.getY() / spacing));
+    System.out.println(node);
+    Cell key = new Cell((int) node.getX() / spacing, (int) node.getY() / spacing);
+    LinkedList<Node> cell =
+        this.getCell(key);
 
-    return cell.remove(node);
+    boolean wasRemoved = cell.remove(node);
+
+    System.out.println(cell);
+
+    if (cell.isEmpty()) {
+      grid.remove(key);
+    }
+
+    return wasRemoved;
   }
 
   /**
@@ -95,59 +104,179 @@ public class Grid {
 
   public Node getNearestNeighbor(Node node) {
     removeFromGrid(node.getID());
-    Node neighbor = greedyNeighborSearch(node);
-    Cell startCell = new Cell((int) node.getX() / spacing, (int) node.getY() / spacing);
 
-    return neighbor;
-  }
-
-  private Node greedyNeighborSearch(Node node) {
+    if (grid.isEmpty()) {
+      return null;
+    }
     Cell startCell = new Cell((int) node.getX() / spacing, (int) node.getY() / spacing);
-    LinkedList<Node> cell = getCell(startCell);
-    Node neighbor = nearestNode(node,grid.get(startCell));
+    System.out.println(grid.get(startCell));
+    Node neighbor = nearestNode(node, grid.get(startCell));
     Cell currentCell = new Cell(startCell.getX() + 1, startCell.getY() - 1);
-    Cell step = new Cell(0,1);
+    Cell step = new Cell(0, 1);
     int currentCircle = 1;
     int i = 0;
 
-    while (neighbor != null) {
+    while (neighbor == null) {
+      LinkedList<Node> cell = getCell(currentCell);
+      System.out.println("currentCell: " + currentCell);
       if (cell != null) {
         neighbor = nearestNode(node, cell);
-        break;
+        System.out.println("Found: " + neighbor);
+        return exactNearestNeighbor(neighbor, node, currentCircle);
       }
-
-      currentCell.setX(currentCell.getX() + step.getX());
-      currentCell.setY(currentCell.getY() + step.getY());
-      i++;
-
-      if (currentCell.getX() - currentCircle == startCell.getX() && currentCell.getY() + currentCircle == startCell.getY()) {
+      else {
+        currentCell.setX(currentCell.getX() + step.getX());
+        currentCell.setY(currentCell.getY() + step.getY());
+        i++;
+      }
+      if (currentCell.getX() - currentCircle == startCell.getX()
+          && currentCell.getY() + currentCircle == startCell.getY()) {
         currentCell.setX(currentCell.getX() + 1);
         currentCell.setY(currentCell.getY() - 1);
-        step.setX(0 * step.getX() + (-1 * step.getY()));
-        step.setY(1 * step.getX() + (0 * step.getY()));
+        int stepX = step.getX();
+        int stepY = step.getY();
+        step.setX(0 * stepX + (-1 * stepY));
+        step.setY(1 * stepX + (0 * stepY));
         currentCircle++;
         i = 0;
       }
 
       if (i == currentCircle * 2) {
-        step.setX(0 * step.getX() + (-1 * step.getY()));
-        step.setY(1 * step.getX() + (0 * step.getY()));
+        int stepX = step.getX();
+        int stepY = step.getY();
+        step.setX(0 * stepX + (-1 * stepY));
+        step.setY(1 * stepX + (0 * stepY));
         i = 0;
       }
-      
-      cell = grid.get(currentCell);
     }
 
     return neighbor;
   }
 
   private Node nearestNode(Node node, Collection<Node> nodes) {
-    return nodes.stream().min(new Comparator<Node>() {
-      @Override
-      public int compare(Node arg0, Node arg1) {
-        double diff = Node.euclidianDistance(arg0, node) - Node.euclidianDistance(arg1, node);
-        return (int) Math.signum(diff);
+    if (nodes == null) {
+      return null;
+    }
+
+    return nodes.stream()
+        .min(
+            new Comparator<Node>() {
+              @Override
+              public int compare(Node arg0, Node arg1) {
+                double diff =
+                    Node.euclidianDistance(arg0, node) - Node.euclidianDistance(arg1, node);
+                return (int) Math.signum(diff);
+              }
+            })
+        .get();
+  }
+
+  protected Node furthestPoint(Node node, Cell currentCell) {
+    Cell startCell = new Cell((int) node.getX() / spacing, (int) node.getY() / spacing);
+    Node furthestPoint = node;
+    if (currentCell.getX() > startCell.getX()) {
+      if (currentCell.getY() > startCell.getY()) {
+        furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY() + spacing, 0);
+      } else if (currentCell.getY() < startCell.getY()) {
+        furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY(), 0);
+      } else {
+        if (node.getY() - currentCell.getY() >= ((double) spacing) / 2) {
+          furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY(), 0);
+        } else {
+          furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY() + spacing, 0);
+        }
       }
-    }).get();
+    } else if (currentCell.getX() < startCell.getX()) {
+      if (currentCell.getY() > startCell.getY()) {
+        furthestPoint = new Node(currentCell.getX(), currentCell.getY() + spacing, 0);
+      } else if (currentCell.getY() < startCell.getY()) {
+        furthestPoint = new Node(currentCell.getX(), currentCell.getY(), 0);
+      } else {
+        if (node.getY() - startCell.getY() >= ((double) spacing) / 2) {
+          furthestPoint = new Node(currentCell.getX(), currentCell.getY(), 0);
+        } else {
+          furthestPoint = new Node(currentCell.getX(), currentCell.getY() + spacing, 0);
+        }
+      }
+    } else {
+      if (node.getX() - startCell.getX() >= ((double) spacing) / 2) {
+        if (currentCell.getY() > startCell.getY()) {
+          furthestPoint = new Node(currentCell.getX(), currentCell.getY() + spacing, 0);
+        } else {
+          furthestPoint = new Node(currentCell.getX(), currentCell.getY(), 0);
+        }
+      }
+      else {
+        if (currentCell.getY() > startCell.getY()) {
+          furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY() + spacing, 0);
+        } else {
+          furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY(), 0);
+        }
+
+      }
+    }
+
+    return furthestPoint;
+  }
+
+  protected Node exactNearestNeighbor(Node neighbor, Node node, int currentCircle) {
+    Cell startCell = new Cell((int) node.getX() / spacing, (int) node.getY() / spacing);
+    LinkedList<Node> cell = getCell(startCell);
+    Cell currentCell = new Cell(startCell.getX() + currentCircle, startCell.getY() - currentCircle);
+    Cell step = new Cell(0, 1);
+    int i = 0;
+    boolean enclosed = true;
+
+    while (true) {
+      if (cell != null) {
+        Node found = nearestNode(node, cell);
+        if (Node.euclidianDistance(node, found) < Node.euclidianDistance(node, neighbor)) {
+          return exactNearestNeighbor(found, node, currentCircle);
+        }
+      }
+
+      if (enclosed == true) {
+        double neighborDistance = Node.euclidianDistance(node, neighbor);
+        Node furthestPoint = furthestPoint(node, currentCell);
+        double furthestPointDistance = Node.euclidianDistance(node, furthestPoint);
+        System.out.println("Distance: " + neighborDistance + ", furthestPointDistance: " + furthestPointDistance);
+
+        if (furthestPoint.getX() < node.getX() && furthestPoint.getY() < node.getY()) {
+          enclosed = neighborDistance <= furthestPointDistance;
+        }
+        else {
+          enclosed = neighborDistance < furthestPointDistance;
+        }
+      }
+
+        currentCell.setX(currentCell.getX() + step.getX());
+        currentCell.setY(currentCell.getY() + step.getY());
+        i++;
+
+      if (currentCell.getX() - currentCircle == startCell.getX()
+          && currentCell.getY() + currentCircle == startCell.getY()) {
+        if (enclosed == true) {
+          return neighbor;
+        }
+        currentCell.setX(currentCell.getX() + 1);
+        currentCell.setY(currentCell.getY() - 1);
+        int stepX = step.getX();
+        int stepY = step.getY();
+        step.setX(0 * stepX + (-1 * stepY));
+        step.setY(1 * stepX + (0 * stepY));
+        currentCircle++;
+        i = 0;
+      }
+
+      if (i == currentCircle * 2) {
+        int stepX = step.getX();
+        int stepY = step.getY();
+        step.setX(0 * stepX + (-1 * stepY));
+        step.setY(1 * stepX + (0 * stepY));
+        i = 0;
+      }
+
+      cell = grid.get(currentCell);
+    }
   }
 }
