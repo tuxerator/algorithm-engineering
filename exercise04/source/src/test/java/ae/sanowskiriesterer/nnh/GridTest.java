@@ -15,7 +15,7 @@ import ae.sanowskiriesterer.DrawTour;
 public class GridTest {
 
   private Grid grid = new Grid();
-  private Grid gird2 = new Grid();
+  private Grid gird2 = new Grid(2);
 
   @BeforeEach
   void init() {
@@ -87,6 +87,8 @@ public class GridTest {
     assertEquals(new Node(4, 7, 0), grid.furthestPoint(new Node(2.45, 4.23, 0), cell));
     cell = new Cell(1, 5);
     assertEquals(new Node(1, 6, 0), grid.furthestPoint(new Node(2.45, 4.23, 0), cell));
+    cell = new Cell(0, 2);
+    assertEquals(new Node(0, 6, 0), gird2.furthestPoint(new Node(2.45, 4.23, 0), cell));
   }
 
   @Test

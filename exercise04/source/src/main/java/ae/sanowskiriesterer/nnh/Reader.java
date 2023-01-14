@@ -42,9 +42,8 @@ public class Reader {
             }
         }
         reader.close();
-    Grid grid = new Grid((int) (Math.max(maxX, maxY) / id), id);
+    Grid grid = new Grid(1, id);
     grid.putAll(nodes);
-    // System.out.println(grid);
 
     return grid;        
     }

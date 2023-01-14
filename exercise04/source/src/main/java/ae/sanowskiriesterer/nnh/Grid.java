@@ -84,14 +84,11 @@ public class Grid {
 
   public boolean removeFromGrid(int ID) {
     Node node = coordinates.get(ID);
-    System.out.println(node);
     Cell key = new Cell((int) node.getX() / spacing, (int) node.getY() / spacing);
     LinkedList<Node> cell =
         this.getCell(key);
 
     boolean wasRemoved = cell.remove(node);
-
-    System.out.println(cell);
 
     if (cell.isEmpty()) {
       grid.remove(key);
@@ -118,14 +115,10 @@ public class Grid {
   public Node getNearestNeighbor(Node node) {
     removeFromGrid(node.getID());
 
-    System.out.println("Searching neighbor for:" + node);
-    System.out.println("Current grid size: " + grid.size());
-
     if (grid.isEmpty()) {
       return null;
     }
     Cell startCell = new Cell((int) node.getX() / spacing, (int) node.getY() / spacing);
-    System.out.println(grid.get(startCell));
     Node neighbor = nearestNode(node, grid.get(startCell));
     Cell currentCell = new Cell(startCell.getX() + 1, startCell.getY() - 1);
     Cell step = new Cell(0, 1);
@@ -136,7 +129,6 @@ public class Grid {
       LinkedList<Node> cell = getCell(currentCell);
       if (cell != null) {
         neighbor = nearestNode(node, cell);
-        System.out.println("Found: " + neighbor);
         return exactNearestNeighbor(neighbor, node, currentCircle);
       }
       else {
@@ -191,41 +183,41 @@ public class Grid {
     Node furthestPoint = node;
     if (currentCell.getX() > startCell.getX()) {
       if (currentCell.getY() > startCell.getY()) {
-        furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY() + spacing, 0);
+        furthestPoint = new Node(currentCell.getX() * spacing + spacing, currentCell.getY() * spacing + spacing, 0);
       } else if (currentCell.getY() < startCell.getY()) {
-        furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY(), 0);
+        furthestPoint = new Node(currentCell.getX() * spacing + spacing, currentCell.getY() * spacing, 0);
       } else {
-        if (node.getY() - currentCell.getY() >= ((double) spacing) / 2) {
-          furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY(), 0);
+        if (node.getY() - (currentCell.getY() * spacing) >= ((double) spacing) / 2) {
+          furthestPoint = new Node(currentCell.getX() * spacing + spacing, currentCell.getY() * spacing, 0);
         } else {
-          furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY() + spacing, 0);
+          furthestPoint = new Node(currentCell.getX() * spacing + spacing, currentCell.getY() * spacing + spacing, 0);
         }
       }
     } else if (currentCell.getX() < startCell.getX()) {
       if (currentCell.getY() > startCell.getY()) {
-        furthestPoint = new Node(currentCell.getX(), currentCell.getY() + spacing, 0);
+        furthestPoint = new Node(currentCell.getX() * spacing, currentCell.getY() * spacing + spacing, 0);
       } else if (currentCell.getY() < startCell.getY()) {
-        furthestPoint = new Node(currentCell.getX(), currentCell.getY(), 0);
+        furthestPoint = new Node(currentCell.getX() * spacing, currentCell.getY() * spacing, 0);
       } else {
-        if (node.getY() - startCell.getY() >= ((double) spacing) / 2) {
-          furthestPoint = new Node(currentCell.getX(), currentCell.getY(), 0);
+        if (node.getY() - (startCell.getY() * spacing) >= ((double) spacing) / 2) {
+          furthestPoint = new Node(currentCell.getX() * spacing, currentCell.getY() * spacing, 0);
         } else {
-          furthestPoint = new Node(currentCell.getX(), currentCell.getY() + spacing, 0);
+          furthestPoint = new Node(currentCell.getX() * spacing, currentCell.getY() * spacing + spacing, 0);
         }
       }
     } else {
-      if (node.getX() - startCell.getX() >= ((double) spacing) / 2) {
+      if (node.getX() - (startCell.getX() * spacing)  >= ((double) spacing) / 2) {
         if (currentCell.getY() > startCell.getY()) {
-          furthestPoint = new Node(currentCell.getX(), currentCell.getY() + spacing, 0);
+          furthestPoint = new Node(currentCell.getX() * spacing, currentCell.getY() * spacing + spacing, 0);
         } else {
-          furthestPoint = new Node(currentCell.getX(), currentCell.getY(), 0);
+          furthestPoint = new Node(currentCell.getX() * spacing, currentCell.getY() * spacing, 0);
         }
       }
       else {
         if (currentCell.getY() > startCell.getY()) {
-          furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY() + spacing, 0);
+          furthestPoint = new Node(currentCell.getX() * spacing + spacing, currentCell.getY() * spacing + spacing, 0);
         } else {
-          furthestPoint = new Node(currentCell.getX() + spacing, currentCell.getY(), 0);
+          furthestPoint = new Node(currentCell.getX() * spacing + spacing, currentCell.getY() * spacing, 0);
         }
 
       }
