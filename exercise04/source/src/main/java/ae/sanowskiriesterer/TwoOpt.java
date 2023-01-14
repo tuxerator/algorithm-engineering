@@ -9,9 +9,11 @@ public class TwoOpt {
     public static ArrayList<Edge> edges;
     public static ArrayList<Node> nodes;
     public static int edgeSwaps;
+    public static double tourLength;
 
     public static void main(String[] args) throws Exception{
 
+        Boolean x = false;
         nodes = new ArrayList<Node>();
         nodes = Reader.read(args[0]);
         long start = System.currentTimeMillis();
@@ -19,6 +21,7 @@ public class TwoOpt {
         // If args[1] == "-nnh" then use createTourNearestNeighbor();
         try {
             if (args[1].equals("-nnh")) {
+              x = true;
               createTourNearestNeighbor();
             }
         }
@@ -27,7 +30,11 @@ public class TwoOpt {
         }
         long end = System.currentTimeMillis();
         long runningTime = end - start;
-        System.out.println(runningTime+","+edgeSwaps);
+        if(x){
+            System.out.println(runningTime+","+edgeSwaps+","+tourLength);
+        } else {
+            System.out.println(runningTime+","+edgeSwaps);
+        }
 
         
     }
@@ -82,7 +89,15 @@ public class TwoOpt {
                 }
             }
         }
+        getTourLength();
 
+    }
+
+    private static void getTourLength(){
+        tourLength = 0;
+        for(Edge e : edges){
+            tourLength += e.weight;
+        }
     }
 
     /**
