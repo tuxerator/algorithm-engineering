@@ -1,11 +1,15 @@
 package ae.sanowskiriesterer.nnh;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+
+import ae.sanowskiriesterer.Edge;
 
 public class Grid {
   private HashMap<Cell, LinkedList<Node>> grid;
@@ -29,6 +33,15 @@ public class Grid {
     this.spacing = spacing;
     grid = new HashMap<>(initialCapacity, loadFactor);
     coordinates = new HashMap<>(initialCapacity, loadFactor);
+  }
+
+  public Grid(Collection<ae.sanowskiriesterer.Node> nodes) {
+    this();
+    Iterator<ae.sanowskiriesterer.Node> nodeIter = nodes.iterator();
+    for ( int i = 0; i < nodes.size(); i++) {
+      ae.sanowskiriesterer.Node node = nodeIter.next();
+      put(new ae.sanowskiriesterer.nnh.Node(node.xCoord, node.yCoord, i));
+    }
   }
 
   public int getSpacing() {
@@ -105,6 +118,9 @@ public class Grid {
   public Node getNearestNeighbor(Node node) {
     removeFromGrid(node.getID());
 
+    System.out.println("Searching neighbor for:" + node);
+    System.out.println("Current grid size: " + grid.size());
+
     if (grid.isEmpty()) {
       return null;
     }
@@ -118,7 +134,6 @@ public class Grid {
 
     while (neighbor == null) {
       LinkedList<Node> cell = getCell(currentCell);
-      System.out.println("currentCell: " + currentCell);
       if (cell != null) {
         neighbor = nearestNode(node, cell);
         System.out.println("Found: " + neighbor);
@@ -239,7 +254,6 @@ public class Grid {
         double neighborDistance = Node.euclidianDistance(node, neighbor);
         Node furthestPoint = furthestPoint(node, currentCell);
         double furthestPointDistance = Node.euclidianDistance(node, furthestPoint);
-        System.out.println("Distance: " + neighborDistance + ", furthestPointDistance: " + furthestPointDistance);
 
         if (furthestPoint.getX() < node.getX() && furthestPoint.getY() < node.getY()) {
           enclosed = neighborDistance <= furthestPointDistance;
@@ -266,6 +280,7 @@ public class Grid {
         step.setY(1 * stepX + (0 * stepY));
         currentCircle++;
         i = 0;
+        enclosed = true;
       }
 
       if (i == currentCircle * 2) {
@@ -278,5 +293,52 @@ public class Grid {
 
       cell = grid.get(currentCell);
     }
+  }
+
+  public ArrayList<Edge> nearestNeighborHeuristic() {
+    Node startNode = coordinates.get(0);
+    ArrayList<Edge> tour = new ArrayList<>();
+
+    Node a = startNode;
+    Node b = getNearestNeighbor(a);
+
+    while (!grid.isEmpty()) {
+      Edge edge = new Edge(a.toBadNode(), b.toBadNode());
+      tour.add(edge);
+      a = b;
+      b = getNearestNeighbor(a);
+    }
+
+    tour.add(new Edge(a.toBadNode(), startNode.toBadNode()));
+
+    return tour;
+  }
+
+  public ArrayList<Edge> nearestNeighborHeuristicQuadratic() {
+    Node startNode = coordinates.get(0);
+    coordinates.remove(startNode.getID());
+    Collection<Node> nodes = coordinates.values();
+    ArrayList<Edge> tour = new ArrayList<>();
+
+    Node a = startNode;
+    Node b;
+
+    while (!nodes.isEmpty()) {
+      b = nearestNode(a,nodes);
+      Edge edge = new Edge(a.toBadNode(), b.toBadNode());
+      tour.add(edge);
+      a = b;
+      coordinates.remove(a.getID());
+    }
+
+    tour.add(new Edge(a.toBadNode(), startNode.toBadNode()));
+
+    return tour;
+
+  }
+
+  @Override
+  public String toString() {
+      return coordinates.toString();
   }
 }

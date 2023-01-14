@@ -35,6 +35,10 @@ public class Node {
     return ID;
   }
 
+  public ae.sanowskiriesterer.Node toBadNode() {
+    return new ae.sanowskiriesterer.Node((float) x, (float) y);
+  }
+
   @Override
   public String toString() {
     return "(ID: " + ID + ", x: " + x + ", y: " + y + ")";

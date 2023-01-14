@@ -22,7 +22,7 @@ public class Reader {
         BufferedReader reader = new BufferedReader(new FileReader(new File(pathToFile)));
         String line;
         int id = 0;
-        while ((line = reader.readLine()) != "EOF") {
+        while (!(line = reader.readLine()).equals("EOF")) {
             String[] words = line.split(" ");
             if(words[0].matches("[0-9]*")) {
                 double x = Double.parseDouble(words[1]);
@@ -37,13 +37,14 @@ public class Reader {
                 } else if(y > maxY) {
                     maxY = y;
                 }
-                nodes.add(new Node (x, y, id));
-            }
+                nodes.add(new Node(x, y, id));
           id++;
+            }
         }
         reader.close();
-    Grid grid = new Grid(1, id);
+    Grid grid = new Grid((int) (Math.max(maxX, maxY) / id), id);
     grid.putAll(nodes);
+    System.out.println(grid);
 
     return grid;        
     }

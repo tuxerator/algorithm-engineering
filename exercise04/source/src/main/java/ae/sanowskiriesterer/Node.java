@@ -9,5 +9,4 @@ public class Node {
         xCoord = x;
         yCoord = y;
     }
-
 }

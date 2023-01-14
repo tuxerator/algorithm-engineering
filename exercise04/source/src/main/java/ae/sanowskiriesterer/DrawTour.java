@@ -4,8 +4,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-import ae.sanowskiriesterer.Edge;
-
 public class DrawTour {
 
     static float xMin;
@@ -32,27 +30,31 @@ public class DrawTour {
     public static void draw(ArrayList<Edge> tour, String outputFile) throws Exception{
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
         getRange(tour);
-        writer.write("<svg width=\""+xValue+"\" height=\""+yValue+"\">");
+        writer.write("<svg version=\"1.1\" viewBox=\"0.0 0.0 " + xValue + ".0" +  yValue + ".0\" " + 
+      "width=\""+xValue+"\" height=\""+yValue+ 
+        "\" fill=\"none\" stroke=\"none\" stroke-linecap=\"square\" stroke-miterlimit=\"10\"" +
+      " xmlns:xlink=\"http://www.w3.org/1999/xlink\"" +
+      " xmlns=\"http://www.w3.org/2000/svg\">");
         writer.newLine();
         for(int i = 0; i < tour.size(); i++){
             if(i==0){
                 //add both nodes
                 float[] point = scale(tour.get(i).nodeA.xCoord,tour.get(i).nodeA.yCoord);
-                writer.write("<circle cx=\""+point[0]+"\" cy=\""+point[1]+"\" r=\"5\" stroke=\"black\" fill=\"black\" />");
+                writer.write("<circle cx=\""+point[0]+"\" cy=\""+point[1]+"\" r=\"1\" stroke=\"black\" fill=\"black\" />");
                 writer.newLine();
                 point = scale(tour.get(i).nodeB.xCoord,tour.get(i).nodeB.yCoord);
-                writer.write("<circle cx=\""+point[0]+"\" cy=\""+point[1]+"\" r=\"5\" stroke=\"black\" fill=\"black\" />");
+                writer.write("<circle cx=\""+point[0]+"\" cy=\""+point[1]+"\" r=\"1\" stroke=\"black\" fill=\"black\" />");
                 writer.newLine();
                 
             } else if(i<tour.size()-1){
                 float [] point = scale(tour.get(i).nodeB.xCoord,tour.get(i).nodeB.yCoord);
-                writer.write("<circle cx=\""+point[0]+"\" cy=\""+point[1]+"\" r=\"5\" stroke=\"black\" fill=\"black\" />");
+                writer.write("<circle cx=\""+point[0]+"\" cy=\""+point[1]+"\" r=\"1\" stroke=\"black\" fill=\"black\" />");
                 writer.newLine();
             }
             // draw a line
             float[] pointStart = scale(tour.get(i).nodeA.xCoord,tour.get(i).nodeA.yCoord);
             float [] pointEnd = scale(tour.get(i).nodeB.xCoord,tour.get(i).nodeB.yCoord);
-            writer.write("<line x1=\""+pointStart[0]+"\" y1=\""+pointStart[1]+"\" x2=\""+pointEnd[0]+"\" y2=\""+pointEnd[1]+"\" style=\"stroke:black;stroke-width:2\" />");
+            writer.write("<line x1=\""+pointStart[0]+"\" y1=\""+pointStart[1]+"\" x2=\""+pointEnd[0]+"\" y2=\""+pointEnd[1]+"\" style=\"stroke:black;stroke-width:0.3\" />");
             writer.newLine();
         }
 

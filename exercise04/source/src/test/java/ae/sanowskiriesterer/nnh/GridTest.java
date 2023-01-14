@@ -9,10 +9,13 @@ import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import ae.sanowskiriesterer.DrawTour;
+
 
 public class GridTest {
 
   private Grid grid = new Grid();
+  private Grid gird2 = new Grid();
 
   @BeforeEach
   void init() {
@@ -34,6 +37,7 @@ public class GridTest {
     ));
 
     grid.putAll(nodes);
+    gird2.put(new Node(1, 1, 0));
   }
 
   @Test
@@ -66,6 +70,7 @@ public class GridTest {
     assertEquals(new Node(1.32,5.45,6), grid.getNearestNeighbor(new Node(1.32,5.45, 0)));
     assertEquals(new Node(100.32,543.45,7), grid.getNearestNeighbor(new Node(105.32,544.45, 8)));
     assertEquals(new Node(49.99,50.99,11), grid.getNearestNeighbor(new Node(50, 50.99,9)));
+    assertEquals(null, gird2.getNearestNeighbor(new Node(1, 1, 0)));
   }
 
   @Test
@@ -82,5 +87,10 @@ public class GridTest {
     assertEquals(new Node(4, 7, 0), grid.furthestPoint(new Node(2.45, 4.23, 0), cell));
     cell = new Cell(1, 5);
     assertEquals(new Node(1, 6, 0), grid.furthestPoint(new Node(2.45, 4.23, 0), cell));
+  }
+
+  @Test
+  void testNearestNeighborHeuristic() throws Exception {
+    DrawTour.draw(grid.nearestNeighborHeuristic(), "tour.svg");
   }
 }
