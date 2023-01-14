@@ -2,6 +2,8 @@ package ae.sanowskiriesterer;
 
 import java.util.ArrayList;
 
+import ae.sanowskiriesterer.nnh.Grid;
+
 public class TwoOpt {
 
     public static ArrayList<Edge> edges;
@@ -13,10 +15,20 @@ public class TwoOpt {
         nodes = new ArrayList<Node>();
         nodes = Reader.read(args[0]);
         long start = System.currentTimeMillis();
-        createTour();
+        
+        // If args[1] == "-nnh" then use createTourNearestNeighbor();
+        try {
+            if (args[1].equals("-nnh")) {
+              createTourNearestNeighbor();
+            }
+        }
+        catch (IndexOutOfBoundsException e) {
+            createTour();
+        }
         long end = System.currentTimeMillis();
         long runningTime = end - start;
         System.out.println(runningTime+","+edgeSwaps);
+
         
     }
 
@@ -37,6 +49,15 @@ public class TwoOpt {
         // DrawTour.draw(edges,"initialLuxembourg.svg");
         improveTour();
         // DrawTour.draw(edges, "resultLuxembourg.svg");
+    }
+
+  /**
+   * Calculates the initialTour with a nearest-neighbour-heuristic
+   */
+    public static void createTourNearestNeighbor() throws Exception {
+      Grid grid = new Grid(nodes);
+      edges = grid.nearestNeighborHeuristicQuadratic();
+      improveTour();
     }
 
     /**
