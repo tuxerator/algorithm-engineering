@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Tour,RunningTime,#EdgeSwaps" > resultTwoOpt.csv
+echo "Tour,RunningTime,#EdgeSwaps,TourLength" > resultTwoOpt.csv
 for tour in data/*; do
 echo $tour
 x=($(java -cp target/classes ae.sanowskiriesterer.TwoOpt $tour))

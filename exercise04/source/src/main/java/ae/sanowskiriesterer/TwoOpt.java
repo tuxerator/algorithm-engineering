@@ -13,7 +13,6 @@ public class TwoOpt {
 
     public static void main(String[] args) throws Exception{
 
-        Boolean x = false;
         nodes = new ArrayList<Node>();
         nodes = Reader.read(args[0]);
         long start = System.currentTimeMillis();
@@ -21,7 +20,6 @@ public class TwoOpt {
         // If args[1] == "-nnh" then use createTourNearestNeighbor();
         try {
             if (args[1].equals("-nnh")) {
-              x = true;
               createTourNearestNeighbor();
             }
         }
@@ -30,12 +28,7 @@ public class TwoOpt {
         }
         long end = System.currentTimeMillis();
         long runningTime = end - start;
-        if(x){
-            System.out.println(runningTime+","+edgeSwaps+","+tourLength);
-        } else {
-            System.out.println(runningTime+","+edgeSwaps);
-        }
-
+        System.out.println(runningTime+","+edgeSwaps+","+tourLength);
         
     }
 
