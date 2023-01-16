@@ -17,7 +17,6 @@ public class NearestNeighbor {
     ArrayList<Edge> nnhTour = grid.nearestNeighborHeuristic();
     double nnhTime = (System.nanoTime() - startTime) / 1000000.0;
     float nnhLength = nnhTour.stream().reduce(0f, (partLength, edge) -> partLength + edge.weight, Float::sum);
-    DrawTour.draw(nnhTour, "./tours/" + instance + ".nnh.svg");
 
     grid = Reader.read(args[0]);
     startTime = System.nanoTime();
@@ -25,7 +24,6 @@ public class NearestNeighbor {
     ArrayList<Edge> nnhqTour = grid.nearestNeighborHeuristicQuadratic();
     double nnhqTime = (System.nanoTime() - startTime) / 1000000.0;
     float nnhqLength = nnhqTour.stream().reduce(0f, (partLength, edge) -> partLength + edge.weight, Float::sum);
-    DrawTour.draw(nnhqTour, "./tours/" + instance + ".nnhq.svg");
 
     System.out.printf("%s, %f, %f, %f, %f%n", instance, nnhTime, nnhLength, nnhqTime, nnhqLength);
   }
