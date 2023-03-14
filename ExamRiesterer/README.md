@@ -9,9 +9,9 @@ mvn clean package
 ```
 mvn compile
 ```
-in the **src** folder.
+in the **maxcut** folder.
 
-There should be a **dependency-reduced-pom.xml** (in **src**) and a **MaxCut-uber.jar** (in **target**).
+There should be a **dependency-reduced-pom.xml** (in **maxcutt**) and a **MaxCut-uber.jar** (in **target**).
 
 ## Run a file
 Execute 
